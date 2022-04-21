@@ -1,18 +1,11 @@
 import os
-from DatabaseRequests import DatabaseRequests
+from Singleton import Singleton
 
 
 # TODO: documentations strings
 # TODO: Create connection with product
 
-class ProductDatabaseRequests(DatabaseRequests):
-    __instance = None
-
-    def __new__(cls, db_name='ProductDatabase.txt'):
-        if cls.__instance is None:
-            cls.__instance = super().__new__(cls)
-        return cls.__instance
-
+class ProductDatabaseRequests(metaclass=Singleton):
     def __init__(self, db_name='ProductDatabase.txt'):
         self.__db_name = db_name
         self.__db_column_names = "id;seller;name;price;description;" \
@@ -92,3 +85,12 @@ class ProductDatabaseRequests(DatabaseRequests):
             return note[:-1].split(';')
         else:
             return []
+
+
+db1 = ProductDatabaseRequests()
+print(db1.get_last_note())
+
+db2 = ProductDatabaseRequests(db_name="clss")
+db1.add_note('s1','s2',11,'s3',{'s4': 3}, 's5',12,13.,14)
+print(db1.get_last_note())
+print(db1.get_last_note())

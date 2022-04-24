@@ -1,5 +1,8 @@
+from Seller import Seller
+
 class Product():
-    def __init__(self, seller: str, name: str, price: int, description: str,
+    #возможно нужно добавить id
+    def __init__(self, seller: Seller, name: str, price: int, description: str,
                  characteristics: dict, category: str, total_quantity: int):
         self.__seller = seller
         self.__name = name
@@ -29,7 +32,7 @@ class Product():
 
     @property
     def price(self):
-        return self.__seller
+        return self.__price
 
     @price.setter
     def price(self, price: int):

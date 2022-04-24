@@ -1,7 +1,8 @@
 from Seller import Seller
 
+
 class Product():
-    #возможно нужно добавить id
+    # возможно нужно добавить id
     def __init__(self, seller: Seller, name: str, price: int, description: str,
                  characteristics: dict, category: str, total_quantity: int):
         self.__seller = seller
@@ -83,7 +84,7 @@ class Product():
             raise ValueError("An assessment should be from zero to five")
         else:
             # Recalculation of average ratings
-            self.__rating = self.__rating*(self.__total_assessments /
-                                           (self.__total_assessments + 1)) + \
-                            assessment/(self.__total_assessments + 1)
+            self.__rating = self.__rating * (self.__total_assessments /
+                                             (self.__total_assessments + 1)) + \
+                            assessment / (self.__total_assessments + 1)
             self.__total_assessments += 1

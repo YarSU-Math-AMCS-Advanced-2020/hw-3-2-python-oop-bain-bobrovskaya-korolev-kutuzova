@@ -88,3 +88,6 @@ class Product():
                                              (self.__total_assessments + 1)) + \
                             assessment / (self.__total_assessments + 1)
             self.__total_assessments += 1
+            self.__seller.rating = (self.__seller.rating * self.__seller.total_assessments + assessment) / (
+                    self.__seller.total_assessments + 1)
+            self.__seller.total_assessments += 1

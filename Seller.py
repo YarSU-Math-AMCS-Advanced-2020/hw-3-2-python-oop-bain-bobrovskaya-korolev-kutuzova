@@ -7,6 +7,7 @@ class Seller():
         self.__city = city
         self.__main_category = main_category
         self.__rating = 0
+        self.__total_assessments = 0
 
     @property
     def name(self):
@@ -55,3 +56,11 @@ class Seller():
     @rating.setter
     def rating(self, rating: str):
         self.__rating = rating
+
+    @property
+    def total_assessments(self):
+        return self.__total_assessments
+
+    @total_assessments.setter
+    def total_assessments(self, total_assessments: str):
+        self.__total_assessments = total_assessments

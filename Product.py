@@ -1,4 +1,5 @@
 from ProductDBRequests import ProductDBRequests
+from Seller import Seller
 
 
 class Product:
@@ -42,7 +43,7 @@ class Product:
 
     @property
     def price(self):
-        return self.__seller
+        return self.__price
 
     def set_price(self, price: int, db: ProductDBRequests):
         self.__price = price
@@ -94,10 +95,13 @@ class Product:
             raise ValueError("An assessment should be from zero to five")
         else:
             # Recalculation of average ratings
-            self.__rating = self.__rating*(self.__total_assessments /
-                                           (self.__total_assessments + 1)) + \
-                            assessment/(self.__total_assessments + 1)
+            self.__rating = self.__rating * (self.__total_assessments /
+                                             (self.__total_assessments + 1)) + \
+                            assessment / (self.__total_assessments + 1)
             self.__total_assessments += 1
             db.update_attribute(self.__idx, 'total_assessment',
                                 self.__total_assessments)
             db.update_attribute(self.__idx, 'rating', self.__rating)
+            # self.__seller.rating = (self.__seller.rating * self.__seller.total_assessments + assessment) / (
+            #        self.__seller.total_assessments + 1)
+            # self.__seller.total_assessments += 1

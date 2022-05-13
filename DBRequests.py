@@ -254,3 +254,8 @@ class DBRequests(metaclass=Singleton):
         else:
             raise ValueError('The element at the specified index does'
                              ' not exist')
+
+    def get_all(self):
+        with open(self.__db_name, 'r') as db_file:
+            notes = db_file.readlines()
+        return [note[:-1].split(';') for note in notes[1:]]

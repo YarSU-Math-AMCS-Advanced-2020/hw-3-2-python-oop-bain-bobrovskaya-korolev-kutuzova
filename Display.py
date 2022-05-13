@@ -1,11 +1,11 @@
 from ProductDBRequests import ProductDBRequests
 
 
-class UserInterface:
+class Display:
     def __init__(self, products_db: ProductDBRequests):
         self.products_db = products_db
 
-    def display_products(self):
+    def products(self):
         # Print idx, name, price
         print(self.products_db.db_cols[9], self.products_db.db_cols[1],
               self.products_db.db_cols[2])
@@ -14,7 +14,7 @@ class UserInterface:
             # ProductDBRequests.__db_cols
             print(note[9], note[1], note[2])
 
-    def display_categories(self):
+    def categories(self):
         uniq_category = set()
         for note in self.products_db.get_all():
             # Added category, is index from ProductDBRequests.__db_cols

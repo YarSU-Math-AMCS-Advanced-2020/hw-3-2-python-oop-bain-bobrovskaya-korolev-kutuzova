@@ -102,7 +102,6 @@ class Product:
             db.update_attribute(self.__idx, 'total_assessment',
                                 self.__total_assessments)
             db.update_attribute(self.__idx, 'rating', self.__rating)
-            
             # self.__seller.rating = (self.__seller.rating * self.__seller.total_assessments + assessment) / (
             #        self.__seller.total_assessments + 1)
             # self.__seller.total_assessments += 1

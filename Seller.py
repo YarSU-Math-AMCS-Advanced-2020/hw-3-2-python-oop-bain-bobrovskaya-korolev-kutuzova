@@ -1,11 +1,12 @@
+from Addres import Addres
 from User import User
 
 
 class Seller(User):
     def __init__(self, login: str, password: str, name: str, email: str,
-                 phone_number: str, city: str,
+                 phone_number: str, addres: Addres,
                  main_category: str):
-        super().__init__(login, password, name, email, phone_number, city)
+        super().__init__(login, password, name, email, phone_number, addres)
         self.__main_category = main_category
         self.__rating = 0
         self.__total_assessments = 0

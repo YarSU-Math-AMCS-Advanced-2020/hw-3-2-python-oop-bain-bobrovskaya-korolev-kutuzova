@@ -1,12 +1,15 @@
+from Addres import Addres
+
+
 class User:
     def __init__(self, login: str, password: str, name: str, email: str,
-                 phone_number: str, city: str):
+                 phone_number: str, addres: Addres):
         self.__login = login
         self.__password = password
         self.__name = name
         self.__email = email
         self.__phone_number = phone_number
-        self.__city = city
+        self.__addres = addres
 
     @property
     def login(self):
@@ -41,9 +44,9 @@ class User:
         self.__phone_number = phone_number
 
     @property
-    def city(self):
-        return self.__city
+    def addres(self):
+        return self.__addres
 
-    @city.setter
-    def city(self, city: str):
-        self.__city = city
+    @addres.setter
+    def addres(self, addres: Addres):
+        self.__addres = addres

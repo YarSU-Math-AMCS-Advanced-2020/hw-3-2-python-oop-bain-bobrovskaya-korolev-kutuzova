@@ -7,9 +7,10 @@ from Product import Product
 
 
 class Order:
+    # the class of the strategy we need is passed to the constructor
     def __init__(self, customer: Customer, composition: List[Product],
                  destination: Addres, payment_method: str,
-                 delivery: DeliveryStrategy, status: str):
+                 delivery, status: str):
         self.__customer = customer
         self.__composition = composition
         self.__total_price = 0
@@ -17,8 +18,14 @@ class Order:
             self.__total_price += product.price
         self.__destination = destination
         self.__payment_method = payment_method
-        self.__delivery = delivery
-        self.__total_price += delivery.price()
+        product_dict = {}
+        for i in composition:
+            if i.seller.addres in product_dict.keys():
+                product_dict[i.seller.addres].append(i)
+            else:
+                product_dict[i.seller.addres] = [i]
+        self.__delivery = delivery(product_dict, destination)
+        self.__total_price += self.__delivery.price()
         self.__status = status
 
     @property

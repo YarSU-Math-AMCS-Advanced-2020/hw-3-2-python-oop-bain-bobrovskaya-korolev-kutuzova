@@ -1,16 +1,24 @@
+from typing import List
+
 from Customer import Customer
 from Addres import Addres
+from DeliveryStrategy import DeliveryStrategy
+from Product import Product
 
 
-class Order():
-    def __init__(self, customer: Customer, total_price: int, composition: list, destination: Addres,
-                 place_of_departure: Addres, payment_method: str, status: str):
+class Order:
+    def __init__(self, customer: Customer, composition: List[Product],
+                 destination: Addres, payment_method: str,
+                 delivery: DeliveryStrategy, status: str):
         self.__customer = customer
-        self.__total_price = total_price
         self.__composition = composition
+        self.__total_price = 0
+        for product in composition:
+            self.__total_price += product.price
         self.__destination = destination
-        self.__place_of_departure = place_of_departure
         self.__payment_method = payment_method
+        self.__delivery = delivery
+        self.__total_price += delivery.price()
         self.__status = status
 
     @property
@@ -46,20 +54,20 @@ class Order():
         self.__destination = destination
 
     @property
-    def place_of_departure(self):
-        return self.__place_of_departure
-
-    @place_of_departure.setter
-    def place_of_departure(self, place_of_departure: dict):
-        self.__place_of_departure = place_of_departure
-
-    @property
     def payment_method(self):
         return self.__payment_method
 
     @payment_method.setter
     def payment_method(self, payment_method: str):
         self.__payment_method = payment_method
+
+    @property
+    def delivery(self):
+        return self.__delivery
+
+    @delivery.setter
+    def delivery(self, delivery: str):
+        self.__delivery = delivery
 
     @property
     def status(self):

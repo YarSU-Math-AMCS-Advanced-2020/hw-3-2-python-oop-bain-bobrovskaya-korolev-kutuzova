@@ -8,7 +8,7 @@ class Order:
     # the class of the strategy we need is passed to the constructor
     def __init__(self, customer: str, composition: List[Product],
                  destination: Addres, payment_method: str,
-                 status: str, delivery):
+                 delivery, status: str):
         self.__customer = customer
         self.__composition = composition
         self.__total_price = 0

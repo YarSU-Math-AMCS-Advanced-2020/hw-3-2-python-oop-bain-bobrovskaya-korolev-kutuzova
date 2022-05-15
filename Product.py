@@ -3,7 +3,7 @@ from Seller import Seller
 
 
 class Product:
-    def __init__(self, seller: str, name: str, price: int, description: str,
+    def __init__(self, seller: Seller, name: str, price: int, description: str,
                  characteristics: dict, category: str, total_quantity: int,
                  db: ProductDBRequests, idx=None):
         # Suppose that parameters were given as db columns
@@ -102,6 +102,7 @@ class Product:
             db.update_attribute(self.__idx, 'total_assessment',
                                 self.__total_assessments)
             db.update_attribute(self.__idx, 'rating', self.__rating)
+            
             # self.__seller.rating = (self.__seller.rating * self.__seller.total_assessments + assessment) / (
             #        self.__seller.total_assessments + 1)
             # self.__seller.total_assessments += 1

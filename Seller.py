@@ -10,6 +10,9 @@ class Seller(User):
         self.__rating = 0
         self.__total_assessments = 0
 
+    def __str__(self):
+        return self.login
+
     @property
     def main_category(self):
         return self.__main_category

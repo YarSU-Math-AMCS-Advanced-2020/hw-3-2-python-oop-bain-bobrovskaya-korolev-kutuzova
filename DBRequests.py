@@ -125,7 +125,7 @@ class DBRequests(metaclass=Singleton):
         bool
             Result of comparing element and database attribute types
         """
-
+        #t = Utils.get_clear_attr_names(elem)
         return Utils.get_clear_attr_names(elem) == self.__db_cols
 
     def add_note(self, elem):
@@ -206,7 +206,7 @@ class DBRequests(metaclass=Singleton):
             note = db_file.readline()
             not_eof = True
             idx_pos_cols = self.__db_cols.index('idx')
-            while note[:-1].split(';')[idx_pos_cols] != idx and not_eof:
+            while not_eof and note[:-1].split(';')[idx_pos_cols] != idx:
                 note = db_file.readline()
                 if not note:
                     not_eof = False

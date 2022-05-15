@@ -1,15 +1,19 @@
 from Addres import Addres
+from AddresDBRequests import AddresDBRequests
 
 
 class User:
     def __init__(self, login: str, password: str, name: str, email: str,
-                 phone_number: str, addres: Addres):
+                 phone_number: str, addres_idx: str,
+                 addres_db: AddresDBRequests):
         self.__login = login
         self.__password = password
         self.__name = name
         self.__email = email
         self.__phone_number = phone_number
-        self.__addres = addres
+        self.__addres = Addres(*addres_db.get_note(addres_idx)[:7], addres_db,
+                               addres_db.get_note(addres_idx)[-1])
+        self.__addres_idx = addres_idx
 
     @property
     def login(self):
@@ -45,8 +49,16 @@ class User:
 
     @property
     def addres(self):
-        return self.__addres
+        return self.__addres_idx
 
     @addres.setter
-    def addres(self, addres: Addres):
+    def addres(self, addres: int):
         self.__addres = addres
+
+    @property
+    def addres_idx(self):
+        return self.__addres_idx
+
+    @addres_idx.setter
+    def addres_idx(self, addres_idx: int):
+        self.__addres_idx = addres_idx

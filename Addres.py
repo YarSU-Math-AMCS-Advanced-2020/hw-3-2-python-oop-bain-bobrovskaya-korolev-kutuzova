@@ -1,6 +1,10 @@
+from AddresDBRequests import AddresDBRequests
+
+
 class Addres():
     def __init__(self, country: str, region: str, locality: str, street: str,
-                 index: int, house: int, flat: int):
+                 index: int, house: int, flat: int, db: AddresDBRequests,
+                 idx=None):
         self.__country = country
         self.__region = region
         self.__locality = locality
@@ -8,6 +12,9 @@ class Addres():
         self.__index = index
         self.__house = house
         self.__flat = flat
+        self.__idx = idx
+        if idx is None:
+            db.add_note(self)
 
     @property
     def country(self):
@@ -64,3 +71,11 @@ class Addres():
     @flat.setter
     def flat(self, flat: str):
         self.__flat = flat
+
+    @property
+    def idx(self):
+        return self.__idx
+
+    @idx.setter
+    def idx(self, idx: str):
+        self.__idx = idx

@@ -1,15 +1,22 @@
 from Addres import Addres
 from User import User
+# from AddresDBRequests import AddresDBRequests
+# from SellerDBRequests import SellerDBRequests
 
 
 class Seller(User):
     def __init__(self, login: str, password: str, name: str, email: str,
-                 phone_number: str, addres: Addres,
-                 main_category: str):
-        super().__init__(login, password, name, email, phone_number, addres)
+                 phone_number: str, addres_idx: str,
+                 main_category: str, addres_db,
+                 seller_db, idx=None):
+        super().__init__(login, password, name, email, phone_number,
+                         addres_idx, addres_db)
         self.__main_category = main_category
         self.__rating = 0
         self.__total_assessments = 0
+        self.__idx = idx
+        if idx is None:
+            seller_db.add_note(self)
 
     def __str__(self):
         return self.login
@@ -37,3 +44,11 @@ class Seller(User):
     @total_assessments.setter
     def total_assessments(self, total_assessments: str):
         self.__total_assessments = total_assessments
+
+    @property
+    def idx(self):
+        return self.__idx
+
+    @idx.setter
+    def idx(self, idx: str):
+        self.__idx = idx

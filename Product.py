@@ -3,9 +3,11 @@ from Seller import Seller
 
 
 class Product:
-    def __init__(self, seller: Seller, name: str, price: int, description: str,
-                 characteristics: dict, category: str, total_quantity: int,
-                 db: ProductDBRequests, idx=None):
+    def __init__(self, seller: Seller, name: str, price: int,
+                 description: str, characteristics: dict, category: str,
+                 total_quantity: int, rating: float = 0,
+                 total_assessments: int = 0, db: ProductDBRequests = None,
+                 idx=None):
         # Suppose that parameters were given as db columns
         self.__seller = seller
         self.__name = name
@@ -14,8 +16,8 @@ class Product:
         self.__characteristics = characteristics
         self.__category = category
         self.__total_quantity = total_quantity
-        self.__rating = 0
-        self.__total_assessments = 0
+        self.__rating = rating
+        self.__total_assessments = total_assessments
         self.__idx = idx
         if idx is None:
             db.add_note(self)

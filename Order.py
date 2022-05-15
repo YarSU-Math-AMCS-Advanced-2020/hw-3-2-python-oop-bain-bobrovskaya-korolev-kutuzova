@@ -1,16 +1,14 @@
 from typing import List
 
-from Customer import Customer
 from Addres import Addres
-from DeliveryStrategy import DeliveryStrategy
 from Product import Product
 
 
 class Order:
     # the class of the strategy we need is passed to the constructor
-    def __init__(self, customer: Customer, composition: List[Product],
+    def __init__(self, customer: str, composition: List[Product],
                  destination: Addres, payment_method: str,
-                 delivery, status: str):
+                 status: str, delivery):
         self.__customer = customer
         self.__composition = composition
         self.__total_price = 0

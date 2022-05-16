@@ -17,11 +17,13 @@ class Customer(User):
                          addres_idx, addres_db)
         self.__idx = idx
         if idx is None:
+            if customer_db.check_similar_login(login):
+                raise AttributeError('Customer already exist')
             customer_db.add_note(self)
 
     def make_order(self, composition: List[Product], payment_method: str,
                    delivery: DeliveryStrategy):
-        Order(self.login, composition,
+        return Order(self.login, composition,
               self.addres, payment_method,
               delivery, 'in processing')
 
@@ -32,3 +34,14 @@ class Customer(User):
     @idx.setter
     def idx(self, idx: str):
         self.__idx = idx
+
+
+def create_customer(addres_idx, addres_db: AddresDBRequests,
+                    customer_db: CustomerDBRequests):
+    login = input('Input login for account: ')
+    password = input('Input password for account: ')
+    name = input('Input name for account: ')
+    email = input('Input email for account: ')
+    phone_number = input('Input phone number for account: ')
+    return Customer(login, password, name, email, phone_number, addres_idx,
+                    addres_db, customer_db)

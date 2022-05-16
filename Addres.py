@@ -79,3 +79,14 @@ class Addres():
     @idx.setter
     def idx(self, idx: str):
         self.__idx = idx
+
+
+def create_addres(db: AddresDBRequests):
+    country = input('Input country for addres: ')
+    region = input('Input region for addres: ')
+    locality = input('Input locality for addres: ')
+    street = input('Input street for addres: ')
+    index = int(input('Input index for addres(int): '))
+    house = int(input('Input house for addres(int): '))
+    flat = int(input('Input flat for addres(int): '))
+    return Addres(country, region, locality, street, index, house, flat, db)

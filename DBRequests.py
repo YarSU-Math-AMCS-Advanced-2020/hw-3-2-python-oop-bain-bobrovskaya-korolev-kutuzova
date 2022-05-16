@@ -160,10 +160,10 @@ class DBRequests(metaclass=Singleton):
     def __add_note(self, attribute_values: list, idx=None):
         with open(self.__db_name, 'a') as db_file:
             if idx is None:
-                max_idx = str(self.get_max_idx())
-                db_file.write(';'.join(attribute_values + [max_idx]) + '\n')
+                max_idx = self.get_max_idx()
+                db_file.write(';'.join(map(str, attribute_values + [max_idx])) + '\n')
             else:
-                db_file.write(';'.join(attribute_values) + '\n')
+                db_file.write(';'.join(map(str, attribute_values)) + '\n')
 
     def del_note(self, idx: str):
         """Deleting a note from the database
@@ -219,7 +219,11 @@ class DBRequests(metaclass=Singleton):
                 elif elem.isdigit():
                     cor_note.append(int(elem))
                 else:
-                    cor_note.append(elem)
+                    try:
+                        is_float = float(elem)
+                        cor_note.append(is_float)
+                    except:
+                        cor_note.append(elem)
             return cor_note
         else:
             return []
@@ -245,7 +249,7 @@ class DBRequests(metaclass=Singleton):
             raise ValueError('Index change not allowed')
         if attribute not in self.__db_cols:
             raise ValueError('Attribute not found')
-
+        idx = str(idx)
         note = self.get_note(idx)
         if note:
             self.del_note(idx)

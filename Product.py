@@ -1,4 +1,5 @@
 from ProductDBRequests import ProductDBRequests
+from SellerDBRequests import SellerDBRequests
 from Seller import Seller
 
 
@@ -92,7 +93,8 @@ class Product:
     def total_assessments(self):
         return self.__total_assessments
 
-    def add_assessment(self, assessment: int, db: ProductDBRequests):
+    def add_assessment(self, assessment: int, product_db: ProductDBRequests,
+                       seller_db: SellerDBRequests):
         if not 0 <= assessment <= 5:
             raise ValueError("An assessment should be from zero to five")
         else:
@@ -101,9 +103,30 @@ class Product:
                                              (self.__total_assessments + 1)) + \
                             assessment / (self.__total_assessments + 1)
             self.__total_assessments += 1
-            db.update_attribute(self.__idx, 'total_assessment',
+            product_db.update_attribute(self.__idx, 'total_assessments',
                                 self.__total_assessments)
-            db.update_attribute(self.__idx, 'rating', self.__rating)
-            # self.__seller.rating = (self.__seller.rating * self.__seller.total_assessments + assessment) / (
-            #        self.__seller.total_assessments + 1)
-            # self.__seller.total_assessments += 1
+            product_db.update_attribute(self.__idx, 'rating', self.__rating)
+
+            self.__seller.rating = (float(self.__seller.rating) * self.__seller.total_assessments + assessment) / (
+                   self.__seller.total_assessments + 1)
+            self.__seller.total_assessments += 1
+            seller_db.update_attribute(self.__seller.idx, 'total_assessments',
+                                        self.__seller.total_assessments)
+            seller_db.update_attribute(self.__seller.idx, 'rating',
+                                       float(self.__seller.rating))
+
+def create_product(seller: Seller, db: ProductDBRequests):
+    name = input('Input product name: ')
+    price = int(input('Input price(int): '))
+    description = input('Input description: ')
+    number_characteristics = int(input('Input number_characteristics(int): '))
+    characteristics_dict = dict()
+    for i in range(int(number_characteristics)):
+        characteristic_name = input('Input characteristic name: ')
+        characteristic_value = input('Input characteristic value: ')
+        characteristics_dict[characteristic_name] = characteristic_value
+    category = input('Input category: ')
+    total_quantity = int(input('Input total quantity(int):'))
+    Product(seller, name, price, description, characteristics_dict,
+            category, total_quantity, db=db)
+

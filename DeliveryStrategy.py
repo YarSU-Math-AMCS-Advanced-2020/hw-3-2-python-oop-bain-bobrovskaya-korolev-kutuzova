@@ -40,6 +40,7 @@ class PostDelivery(DeliveryStrategy):
     def price(self) -> int:
         return post_price
 
+
 def choose_delivery(delivery_name: str):
     if delivery_name == 'Yandex':
         delivery = YandexDelivery

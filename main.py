@@ -5,7 +5,6 @@ from AddresDBRequests import AddresDBRequests
 from SellerDBRequests import SellerDBRequests
 from CustomerDBRequests import CustomerDBRequests
 
-
 product_db = ProductDBRequests()
 addres_db = AddresDBRequests()
 seller_db = SellerDBRequests()

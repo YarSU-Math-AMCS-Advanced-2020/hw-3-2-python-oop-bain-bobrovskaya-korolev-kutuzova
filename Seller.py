@@ -8,8 +8,8 @@ class Seller(User):
     def __init__(self, login: str, password: str, name: str, email: str,
                  phone_number: str, addres_idx: str,
                  main_category: str, rating=0, total_assessments=0,
-                 addres_db: AddresDBRequests=None,
-                 seller_db: SellerDBRequests=None,
+                 addres_db: AddresDBRequests = None,
+                 seller_db: SellerDBRequests = None,
                  idx=None):
         super().__init__(login, password, name, email, phone_number,
                          addres_idx, addres_db)
@@ -58,9 +58,8 @@ class Seller(User):
         self.__idx = idx
 
 
-
-def create_seller(addres_idx: str,  addres_db: AddresDBRequests=None,
-                 seller_db: SellerDBRequests=None):
+def create_seller(addres_idx: str, addres_db: AddresDBRequests = None,
+                  seller_db: SellerDBRequests = None):
     login = input('Input login for account: ')
     password = input('Input password for account: ')
     name = input('Input name for account: ')

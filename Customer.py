@@ -24,8 +24,8 @@ class Customer(User):
     def make_order(self, composition: List[Product], payment_method: str,
                    delivery: DeliveryStrategy):
         return Order(self.login, composition,
-              self.addres, payment_method,
-              delivery, 'in processing')
+                     self.addres, payment_method,
+                     delivery, 'in processing')
 
     @property
     def idx(self):

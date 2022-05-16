@@ -123,7 +123,7 @@ class UserInterface:
                 elif user_type == 'seller':
                     seller = self.__seller_db.get_note_by_login(login)
                     if self.__seller_db.check_similar_login(login):
-                        #print(*seller[:5], str(seller[6]), seller[-1])
+                        # print(*seller[:5], str(seller[6]), seller[-1])
                         self.__seller = Seller(*seller[:5], str(seller[6]),
                                                *seller[7:-1],
                                                self.__addres_db,
@@ -131,7 +131,7 @@ class UserInterface:
                                                seller[-1])
                         if self.__seller is not None:
                             self.__is_sign_in = True
-                        #print(1)
+                        # print(1)
             if cur_key == 'create' and not self.__is_sign_in:
                 user_type = input('Input user type- customer or seller: ')
                 addres = create_addres(self.__addres_db)
@@ -148,7 +148,7 @@ class UserInterface:
                     )
                     if self.__seller is not None:
                         self.__is_sign_in = True
-               # print(1)
+            # print(1)
             if cur_key == 'categories':
                 categories = self.__display.categories()
                 self.__cur_category = input('Choose a category: ')

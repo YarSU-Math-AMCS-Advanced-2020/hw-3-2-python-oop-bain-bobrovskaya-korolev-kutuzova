@@ -39,6 +39,7 @@ class DBRequests(metaclass=Singleton):
     ValueError
         If the element at the specified index does not exist
     """
+
     def __init__(self, db_name: str, db_cols: list):
         """
         Parameters
@@ -125,7 +126,7 @@ class DBRequests(metaclass=Singleton):
         bool
             Result of comparing element and database attribute types
         """
-        #t = Utils.get_clear_attr_names(elem)
+        # t = Utils.get_clear_attr_names(elem)
         return Utils.get_clear_attr_names(elem) == self.__db_cols
 
     def add_note(self, elem):

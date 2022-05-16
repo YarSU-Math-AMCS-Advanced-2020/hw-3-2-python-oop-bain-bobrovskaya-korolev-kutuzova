@@ -104,16 +104,17 @@ class Product:
                             assessment / (self.__total_assessments + 1)
             self.__total_assessments += 1
             product_db.update_attribute(self.__idx, 'total_assessments',
-                                self.__total_assessments)
+                                        self.__total_assessments)
             product_db.update_attribute(self.__idx, 'rating', self.__rating)
 
             self.__seller.rating = (float(self.__seller.rating) * self.__seller.total_assessments + assessment) / (
-                   self.__seller.total_assessments + 1)
+                    self.__seller.total_assessments + 1)
             self.__seller.total_assessments += 1
             seller_db.update_attribute(self.__seller.idx, 'total_assessments',
-                                        self.__seller.total_assessments)
+                                       self.__seller.total_assessments)
             seller_db.update_attribute(self.__seller.idx, 'rating',
                                        float(self.__seller.rating))
+
 
 def create_product(seller: Seller, db: ProductDBRequests):
     name = input('Input product name: ')
@@ -129,4 +130,3 @@ def create_product(seller: Seller, db: ProductDBRequests):
     total_quantity = int(input('Input total quantity(int):'))
     Product(seller, name, price, description, characteristics_dict,
             category, total_quantity, db=db)
-

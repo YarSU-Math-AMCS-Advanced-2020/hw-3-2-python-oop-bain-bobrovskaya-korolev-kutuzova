@@ -6,21 +6,21 @@ class SellerDBRequests(DBRequests):
 
     Parameters
     ----------
-    __db_cols : list
+    db_cols : list
         Seller database columns
     """
-    __db_cols = ['User__login', 'User__password', 'User__name', 'User__email',
-                 'User__phone_number', 'User__address', 'User__address_idx',
-                 'main_category', 'rating', 'total_assessments', 'idx']
+    db_cols = ['User__login', 'User__password', 'User__name', 'User__email',
+               'User__phone_number', 'User__address', 'User__address_idx',
+               'main_category', 'rating', 'total_assessments', 'idx']
 
     def __init__(self, db_name='SellerDatabase.txt'):
-        super().__init__(db_name, self.__db_cols)
+        super().__init__(db_name, self.db_cols)
 
     def get_note_by_login(self, login: str):
         with open(self.db_name, 'r') as db_file:
             note = db_file.readline()
             not_eof = True
-            login_pos_cols = self.__db_cols.index('User__login')
+            login_pos_cols = self.db_cols.index('User__login')
             while not_eof and note[:-1].split(';')[login_pos_cols] != login:
                 note = db_file.readline()
                 if not note:

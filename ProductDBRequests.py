@@ -6,12 +6,12 @@ class ProductDBRequests(DBRequests):
 
     Parameters
     ----------
-    __db_cols : list
+    db_cols : list
         Product database columns
     """
-    __db_cols = ['seller', 'name', 'price', 'description',
+    db_cols = ['seller', 'name', 'price', 'description',
                  'characteristics', 'category', 'total_quantity',
                  'rating', 'total_assessments', 'idx']
 
     def __init__(self, db_name='ProductDatabase.txt'):
-        super().__init__(db_name, self.__db_cols)
+        super().__init__(db_name, self.db_cols)

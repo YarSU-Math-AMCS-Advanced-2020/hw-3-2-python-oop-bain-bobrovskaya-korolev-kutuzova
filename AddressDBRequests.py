@@ -6,11 +6,11 @@ class AddressDBRequests(DBRequests):
 
     Parameters
     ----------
-    __db_cols : list
+    db_cols : list
         Address database columns
     """
-    __db_cols = ['country', 'region', 'locality', 'street',
-                 'index', 'house', 'flat', 'idx']
+    db_cols = ['country', 'region', 'locality', 'street',
+               'index', 'house', 'flat', 'idx']
 
     def __init__(self, db_name='AddressDatabase.txt'):
-        super().__init__(db_name, self.__db_cols)
+        super().__init__(db_name, self.db_cols)

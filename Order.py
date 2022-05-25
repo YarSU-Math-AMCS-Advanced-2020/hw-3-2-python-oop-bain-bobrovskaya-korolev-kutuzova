@@ -1,13 +1,13 @@
 from typing import List
 
-from Addres import Addres
+from Address import Address
 from Product import Product
 
 
 class Order:
     # the class of the strategy we need is passed to the constructor
     def __init__(self, customer: str, composition: List[Product],
-                 destination: Addres, payment_method: str,
+                 destination: Address, payment_method: str,
                  delivery, status: str):
         self.__customer = customer
         self.__composition = composition
@@ -18,10 +18,10 @@ class Order:
         self.__payment_method = payment_method
         product_dict = {}
         for i in composition:
-            if i.seller.addres in product_dict.keys():
-                product_dict[i.seller.addres].append(i)
+            if i.seller.address in product_dict.keys():
+                product_dict[i.seller.address].append(i)
             else:
-                product_dict[i.seller.addres] = [i]
+                product_dict[i.seller.address] = [i]
         self.__delivery = delivery(product_dict, destination)
         self.__total_price += self.__delivery.price()
         self.__status = status

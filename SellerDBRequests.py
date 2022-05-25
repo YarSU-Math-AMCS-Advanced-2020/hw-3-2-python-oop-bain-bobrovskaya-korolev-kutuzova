@@ -10,7 +10,7 @@ class SellerDBRequests(DBRequests):
         Seller database columns
     """
     __db_cols = ['User__login', 'User__password', 'User__name', 'User__email',
-                 'User__phone_number', 'User__addres', 'User__addres_idx',
+                 'User__phone_number', 'User__address', 'User__address_idx',
                  'main_category', 'rating', 'total_assessments', 'idx']
 
     def __init__(self, db_name='SellerDatabase.txt'):

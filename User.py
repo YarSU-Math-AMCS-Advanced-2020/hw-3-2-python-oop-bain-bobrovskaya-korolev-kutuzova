@@ -1,19 +1,19 @@
-from Addres import Addres
-from AddresDBRequests import AddresDBRequests
+from Address import Address
+from AddressDBRequests import AddressDBRequests
 
 
 class User:
     def __init__(self, login: str, password: str, name: str, email: str,
-                 phone_number: str, addres_idx: str,
-                 addres_db: AddresDBRequests):
+                 phone_number: str, address_idx: str,
+                 address_db: AddressDBRequests):
         self.__login = login
         self.__password = password
         self.__name = name
         self.__email = email
         self.__phone_number = phone_number
-        self.__addres = Addres(*addres_db.get_note(addres_idx)[:7], addres_db,
-                               addres_db.get_note(addres_idx)[-1])
-        self.__addres_idx = addres_idx
+        self.__address = Address(*address_db.get_note(address_idx)[:7], address_db,
+                                 address_db.get_note(address_idx)[-1])
+        self.__address_idx = address_idx
 
     @property
     def login(self):
@@ -48,17 +48,17 @@ class User:
         self.__phone_number = phone_number
 
     @property
-    def addres(self):
-        return self.__addres_idx
+    def address(self):
+        return self.__address_idx
 
-    @addres.setter
-    def addres(self, addres: int):
-        self.__addres = addres
+    @address.setter
+    def address(self, address: int):
+        self.__address = address
 
     @property
-    def addres_idx(self):
-        return self.__addres_idx
+    def address_idx(self):
+        return self.__address_idx
 
-    @addres_idx.setter
-    def addres_idx(self, addres_idx: int):
-        self.__addres_idx = addres_idx
+    @address_idx.setter
+    def address_idx(self, address_idx: int):
+        self.__address_idx = address_idx

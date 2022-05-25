@@ -1,9 +1,9 @@
-from AddresDBRequests import AddresDBRequests
+from AddressDBRequests import AddressDBRequests
 
 
-class Addres():
+class Address:
     def __init__(self, country: str, region: str, locality: str, street: str,
-                 index: int, house: int, flat: int, db: AddresDBRequests,
+                 index: int, house: int, flat: int, db: AddressDBRequests,
                  idx=None):
         self.__country = country
         self.__region = region
@@ -81,12 +81,12 @@ class Addres():
         self.__idx = idx
 
 
-def create_addres(db: AddresDBRequests):
-    country = input('Input country for addres: ')
-    region = input('Input region for addres: ')
-    locality = input('Input locality for addres: ')
-    street = input('Input street for addres: ')
-    index = int(input('Input index for addres(int): '))
-    house = int(input('Input house for addres(int): '))
-    flat = int(input('Input flat for addres(int): '))
-    return Addres(country, region, locality, street, index, house, flat, db)
+def create_address(db: AddressDBRequests):
+    country = input('Input country for address: ')
+    region = input('Input region for address: ')
+    locality = input('Input locality for address: ')
+    street = input('Input street for address: ')
+    index = int(input('Input index for address(int): '))
+    house = int(input('Input house for address(int): '))
+    flat = int(input('Input flat for address(int): '))
+    return Address(country, region, locality, street, index, house, flat, db)

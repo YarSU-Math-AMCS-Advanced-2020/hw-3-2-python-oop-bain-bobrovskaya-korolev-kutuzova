@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from Addres import Addres
+from Address import Address
 from Product import Product
 
 yandex_price = 150
@@ -10,7 +10,7 @@ post_price = 100
 
 # accessing the delivery system
 class DeliveryStrategy:
-    def __init__(self, product_dict: Dict[Addres, List[Product]], destination: Addres):
+    def __init__(self, product_dict: Dict[Address, List[Product]], destination: Address):
         pass
 
     def price(self) -> int:
@@ -18,7 +18,7 @@ class DeliveryStrategy:
 
 
 class YandexDelivery(DeliveryStrategy):
-    def __init__(self, product_dict: Dict[Addres, List[Product]], destination: Addres):
+    def __init__(self, product_dict: Dict[Address, List[Product]], destination: Address):
         super().__init__(product_dict, destination)
 
     def price(self) -> int:
@@ -26,7 +26,7 @@ class YandexDelivery(DeliveryStrategy):
 
 
 class SberDelivery(DeliveryStrategy):
-    def __init__(self, product_dict: Dict[Addres, List[Product]], destination: Addres):
+    def __init__(self, product_dict: Dict[Address, List[Product]], destination: Address):
         super().__init__(product_dict, destination)
 
     def price(self) -> int:
@@ -34,7 +34,7 @@ class SberDelivery(DeliveryStrategy):
 
 
 class PostDelivery(DeliveryStrategy):
-    def __init__(self, product_dict: Dict[Addres, List[Product]], destination: Addres):
+    def __init__(self, product_dict: Dict[Address, List[Product]], destination: Address):
         super().__init__(product_dict, destination)
 
     def price(self) -> int:

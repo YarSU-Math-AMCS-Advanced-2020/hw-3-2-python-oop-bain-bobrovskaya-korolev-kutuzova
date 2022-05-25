@@ -5,8 +5,8 @@ from Seller import Seller, create_seller
 from ProductDBRequests import ProductDBRequests
 from SellerDBRequests import SellerDBRequests
 from CustomerDBRequests import CustomerDBRequests
-from AddresDBRequests import AddresDBRequests
-from Addres import Addres, create_addres
+from AddressDBRequests import AddressDBRequests
+from Address import Address, create_address
 from Order import Order
 from DeliveryStrategy import YandexDelivery, SberDelivery, PostDelivery, \
     yandex_price, sber_price, post_price, choose_delivery
@@ -16,13 +16,13 @@ class UserInterface:
     def __init__(self, display: Display, product_db: ProductDBRequests,
                  seller_db: SellerDBRequests,
                  customer_db: CustomerDBRequests,
-                 addres_db: AddresDBRequests):
+                 address_db: AddressDBRequests):
         self.__display = display
         self.__cur_category = ''
         self.__product_db = product_db
         self.__seller_db = seller_db
         self.__customer_db = customer_db
-        self.__addres_db = addres_db
+        self.__address_db = address_db
         self.__is_sign_in = False
         self.__customer = None
         self.__seller = None
@@ -50,7 +50,7 @@ class UserInterface:
             seller_raw = self.__seller_db.get_note_by_login(product[0])
             seller = Seller(*seller_raw[:5], str(seller_raw[6]),
                             *seller_raw[7:-1],
-                            self.__addres_db,
+                            self.__address_db,
                             self.__seller_db,
                             seller_raw[-1])
         return Product(seller, *product[1:-1], db=self.__product_db,
@@ -115,7 +115,7 @@ class UserInterface:
                     if self.__customer_db.check_similar_login(login):
                         self.__customer = Customer(*customer[:5],
                                                    str(customer[6]),
-                                                   self.__addres_db,
+                                                   self.__address_db,
                                                    self.__customer_db,
                                                    customer[-1])
                         if self.__customer is not None:
@@ -126,25 +126,24 @@ class UserInterface:
                         # print(*seller[:5], str(seller[6]), seller[-1])
                         self.__seller = Seller(*seller[:5], str(seller[6]),
                                                *seller[7:-1],
-                                               self.__addres_db,
+                                               self.__address_db,
                                                self.__seller_db,
                                                seller[-1])
                         if self.__seller is not None:
                             self.__is_sign_in = True
-                        # print(1)
-            if cur_key == 'create' and not self.__is_sign_in:
+                        # print(1)     if cur_key == 'create' and not self.__is_sign_in:
                 user_type = input('Input user type- customer or seller: ')
-                addres = create_addres(self.__addres_db)
+                address = create_address(self.__address_db)
                 if user_type == 'customer' and not self.__is_sign_in:
                     self.__customer = create_customer(
-                        str(self.__addres_db.get_last_note()[-1]),
-                        self.__addres_db, self.__customer_db)
+                        str(self.__address_db.get_last_note()[-1]),
+                        self.__address_db, self.__customer_db)
                     if self.__customer is not None:
                         self.__is_sign_in = True
                 elif user_type == 'seller' and not self.__is_sign_in:
                     self.__seller = create_seller(
-                        str(self.__addres_db.get_last_note()[-1]),
-                        self.__addres_db, self.__seller_db
+                        str(self.__address_db.get_last_note()[-1]),
+                        self.__address_db, self.__seller_db
                     )
                     if self.__seller is not None:
                         self.__is_sign_in = True

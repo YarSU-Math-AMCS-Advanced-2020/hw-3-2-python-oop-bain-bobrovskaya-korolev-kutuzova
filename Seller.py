@@ -13,10 +13,10 @@ class Seller(User):
                  idx=None):
         super().__init__(login, password, name, email, phone_number,
                          address_idx, address_db)
-        self.__main_category = main_category
-        self.__rating = rating
-        self.__total_assessments = total_assessments
-        self.__idx = idx
+        self.main_category = main_category
+        self.rating = rating
+        self.total_assessments = total_assessments
+        self.idx = idx
         if idx is None:
             if seller_db.check_similar_login(login):
                 raise AttributeError('Seller already exist')
@@ -24,38 +24,6 @@ class Seller(User):
 
     def __str__(self):
         return self.login
-
-    @property
-    def main_category(self):
-        return self.__main_category
-
-    @main_category.setter
-    def main_category(self, main_category: str):
-        self.__main_category = main_category
-
-    @property
-    def rating(self):
-        return self.__rating
-
-    @rating.setter
-    def rating(self, rating: str):
-        self.__rating = rating
-
-    @property
-    def total_assessments(self):
-        return self.__total_assessments
-
-    @total_assessments.setter
-    def total_assessments(self, total_assessments: str):
-        self.__total_assessments = total_assessments
-
-    @property
-    def idx(self):
-        return self.__idx
-
-    @idx.setter
-    def idx(self, idx: str):
-        self.__idx = idx
 
 
 def create_seller(address_idx: str, address_db: AddressDBRequests = None,

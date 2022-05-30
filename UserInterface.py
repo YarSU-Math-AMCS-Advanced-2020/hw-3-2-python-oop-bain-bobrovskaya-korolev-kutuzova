@@ -5,7 +5,7 @@ from ProductDBRequests import ProductDBRequests
 from SellerDBRequests import SellerDBRequests
 from CustomerDBRequests import CustomerDBRequests
 from Address import Address
-from Order import Order
+from Order import Order, OrderStatus
 from DeliveryStrategy import YandexDelivery, SberDelivery, PostDelivery, choose_delivery
 
 
@@ -372,7 +372,7 @@ class UserInterface:
         self.order_list.append(
             Order(customer=self.user.login, composition=self.cart_list,
                   destination=destination, payment_method=payment_method,
-                  delivery=delivery, status='in processing'))
+                  delivery=delivery, status=OrderStatus.IN_PROGRESS))
 
         self.cart_list.clear()
 

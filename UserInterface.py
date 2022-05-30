@@ -1,12 +1,11 @@
 from Display import Display
-from Product import Product, create_product
-from Customer import Customer, create_customer
-from Seller import Seller, create_seller
+from Product import Product
+from Customer import Customer
+from Seller import Seller
 from ProductDBRequests import ProductDBRequests
 from SellerDBRequests import SellerDBRequests
 from CustomerDBRequests import CustomerDBRequests
-from AddressDBRequests import AddressDBRequests
-from Address import Address, create_address
+from Address import Address
 from Order import Order
 from DeliveryStrategy import YandexDelivery, SberDelivery, PostDelivery, \
     yandex_price, sber_price, post_price, choose_delivery
@@ -15,175 +14,377 @@ from DeliveryStrategy import YandexDelivery, SberDelivery, PostDelivery, \
 class UserInterface:
     def __init__(self, display: Display, product_db: ProductDBRequests,
                  seller_db: SellerDBRequests,
-                 customer_db: CustomerDBRequests,
-                 address_db: AddressDBRequests):
-        self.display = display
-        self.cur_category = ''
+                 customer_db: CustomerDBRequests):
+
+        # data bases
         self.product_db = product_db
         self.seller_db = seller_db
         self.customer_db = customer_db
-        self.address_db = address_db
+
+        # current state
         self.is_sign_in = False
-        self.customer = None
-        self.seller = None
-        self.product_list = list()
+        self.user = None
+        self.display = display
+        self.cur_category = ''
+        self.cart_list = list()
         self.order_list = list()
 
-    def create_order(self):
-        if self.customer is None:
-            print('You must be logged in as a customer')
-            if len(self.product_list) == 0:
-                print('Cart is empty')
-        if self.customer is not None and len(self.product_list) != 0:
-            payment_method = input('Input payment method: ')
-            print('Yandex, price: ', yandex_price)
-            print('Sber, price: ', sber_price)
-            print('Post, price: ', post_price)
-            delivery_name = input('Input delivery name: ')
-            delivery = choose_delivery(delivery_name)
-            self.order_list.append(
-                self.customer.make_order(self.product_list.copy(),
-                                           payment_method, delivery))
 
-    def create_product_by_raw(self, product):
-        if self.customer is not None:
-            seller_raw = self.seller_db.get_note_by_login(product[0])
-            seller = Seller(*seller_raw[:5], str(seller_raw[6]),
-                            *seller_raw[7:-1],
-                            self.address_db,
-                            self.seller_db,
-                            seller_raw[-1])
-        return Product(seller, *product[1:-1], db=self.product_db,
-                       idx=product[-1])
+    def home(self):
+        """
+        Print list of commands that user can type
+        """
+        commands = ['register', 'sign in', 'sign out', 'create product',
+                    'show products', 'select product', 'show cart', 'make order', 'exit']
 
-    def product_in_cart(self, product_idx: str):
-        product_raw = self.display.product(product_idx)
-        if self.customer is not None:
-            product = self.create_product_by_raw(product_raw)
-            if product.total_quantity > 0:
-                product.set_total_quantity(product.total_quantity - 1,
-                                           self.product_db)
-                self.product_list.append(product)
-            else:
-                print('Product is out of stock')
+        print('Available commands: \n\t',end='')
+        print(*commands, sep='\n\t')
 
-    def add_product_assessment(self, product_idx: str):
-        product_raw = self.display.product(product_idx)
-        if self.customer is not None:
-            product = self.create_product_by_raw(product_raw)
-            assessment = int(input('Input assessment(int): '))
-            product.add_assessment(assessment, self.product_db,
-                                   self.seller_db)
 
-    def product_seller(self, product_idx: str):
-        self.display.seller_by_product(product_idx)
+    def input_address(self):
+        country = input('Input country for address: ')
+        region = input('Input region for address: ')
+        locality = input('Input locality for address: ')
+        street = input('Input street for address: ')
+        index = int(input('Input index for address(int): '))
+        house = int(input('Input house for address(int): '))
+        flat = int(input('Input flat for address(int): '))
 
-    def process_product_case(self, product_idx: str):
-        self.display.product(product_idx)
-        choose_type = input('Choose "add" to add product in cart, '
-                            '"assessment" to add product assessment,'
-                            '"seller" to see product seller: ')
-        if choose_type == 'add':
-            self.product_in_cart(product_idx)
+        return {'country': country,
+                'region': region,
+                'locality': locality,
+                'street': street,
+                'index': index,
+                'house': house,
+                'flat': flat}
+
+    def register(self):
+        """
+        Ask for user type and then call self.register_customer() or self.register_seller()
+        """
+        user_type = input('Input user type (customer or seller): ')
+        if user_type == 'customer':
+            self.register_customer()
+        elif user_type == 'seller':
+            self.register_seller()
+        else:
+            print('User type must be customer or seller')
+
+    def register_customer(self):
+        """
+        Ask for customer info and add new customer to the database
+        """
+        login = input('Input login for account: ')
+        while self.customer_db.is_there_by('login', login):
+            print('Customer user with this login already exists')
+            login = input('Input login for account: ')
+
+        password = input('Input password for account: ')
+        name = input('Input name for account: ')
+        email = input('Input email for account: ')
+        phone_number = input('Input phone number for account: ')
+        address = self.input_address()
+
+        self.customer_db.add_note(Customer(login=login, password=password, name=name,
+                                           email=email, phone_number=phone_number,
+                                           address=address, idx=login))
+
+    def register_seller(self):
+        """
+        Ask for seller info and add new seller to the database
+        """
+        login = input('Input login for account: ')
+        while self.seller_db.is_there_by('login', login):
+            print('Seller user with this login already exists')
+            login = input('Input login for account: ')
+
+        password = input('Input password for account: ')
+        name = input('Input name for account: ')
+        email = input('Input email for account: ')
+        phone_number = input('Input phone number for account: ')
+        address = self.input_address()
+
+        self.seller_db.add_note(Seller(login=login, password=password, name=name,
+                                       email=email, phone_number=phone_number,
+                                       address=address,
+                                       main_category="main_category",
+                                       rating=0, total_assessments=0, idx=login))
+
+    def sign_in(self):
+        """
+        Ask user for login/password and set ``self.user`` if this is correct login/password pair
+        """
+        if self.is_sign_in:
+            print('You are already signed in. To sign in in different account sign out first.')
+            return
+
+        user_type = input('Input user type (customer or seller): ')
+        if user_type not in ['customer', 'seller']:
+            print('Wrong user type.')
+            return
+
+        login = input('Input login: ')
+        password = input('Input password: ')
+
+        if user_type == 'customer' and self.customer_db.is_there_by('login', login):
+            self.user = Customer(*self.customer_db.get_note_by_login(login))
+        elif user_type == 'seller' and self.seller_db.is_there_by('login', login):
+            self.user = Seller(*self.seller_db.get_note_by_login(login))
+        else:
+            print('User with this login is not registered')
+            return
+
+        if self.user.password != password:
+            self.user = None
+            print('Wrong password. Try again')
+            return
+
+        self.is_sign_in = True
+
+    def sign_out(self):
+        """
+        Sign out of account so user can sign in another account
+        """
+        if not self.is_sign_in:
+            print('You are already signed out.')
+            return
+
+        print('You signed out from the account', self.user)
+        self.user = None
+        self.is_sign_in = False
+
+    def create_product(self):
+        """
+        (for sellers only) Ask for product info and add it to the database
+        """
+        if not isinstance(self.user, Seller):
+            print("You must be logged as a seller to create a product.")
+            return
+
+        name = input("Input the name of your product:")
+        price = float(input("Input the price of your product:"))
+        description = input("Input the description of your product:")
+        characteristics = dict()
+        print("Input characteristics of your product (just enter to continue):")
+        while 1:
+            key = input("Characteristic name:")
+            if not key:
+                break
+            value = input("Characteristic value:")
+            characteristics[key] = value
+
+        category = input("Input the category of your product:")
+        total_quantity = int(input("Input the total_quantity of your product:"))
+
+        idx = input("Input unique identifier of your product:")
+        if self.product_db.is_there_by('idx', idx):
+            print('Product with this unique identifier already exists')
+            idx = input("Input unique identifier of your product:")
+
+        self.product_db.add_note(
+            Product(seller=self.user.login, name=name, price=price,
+                    description=description, characteristics=characteristics,
+                    category=category, total_quantity=total_quantity,
+                    rating=0, total_assessments=0,
+                    idx=idx))
+
+        Product(*self.product_db.get_note(idx))
+
+    def show_products(self):
+
+        categories = ['All'] + self.product_db.unique('category')
+        print('Categories: ', *categories, sep='\n\t', end='\n')
+
+        category = input("Select category: ")
+
+        # select fields to print
+        indexes = [self.product_db.field_index('idx'),
+                   self.product_db.field_index('name'),
+                   self.product_db.field_index('price'),
+                   self.product_db.field_index('category'),
+                   self.product_db.field_index('rating'),
+                   self.product_db.field_index('total_assessments')]
+
+        # get all notes
+        product_notes = self.product_db.get_all_notes()
+
+        # remove notes of other categories
+        if category != 'All':
+            product_notes = list(filter(lambda x: x[indexes[3]] == category, product_notes))
+
+        # add head of our table
+        product_notes = [self.product_db.db_cols] + product_notes
+
+        # select fields of interest
+        product_notes = [[note[i] for i in indexes] for note in product_notes]
+
+        # print everything, applying ljust(18)
+        for note in product_notes:
+            print(*list(map(lambda x: str(x).ljust(18), note)), sep='')
+
+    def select_product(self):
+        product_idx = input("Select product identifier: ")
+        product_note = self.product_db.get_note(product_idx)
+        if product_note is None:
+            print("There is no product with this identifier")
+            return
+
+        product = Product(*product_note)
+        self.product_info(product)
+
+        choose_type = input('Type \n\t'
+                            '"cart" to add the product in cart,\n\t'
+                            '"assessment" to add product assessment,\n\t'
+                            '"seller" to see the product seller details,\n\t'
+                            '"back" to go back: \n\t')
+        if choose_type == 'cart':
+            self.add_product_in_cart(product)
         elif choose_type == 'assessment':
-            self.add_product_assessment(product_idx)
+            self.add_product_assessment(product)
         elif choose_type == 'seller':
-            self.product_seller(product_idx)
+            self.seller_info(product.seller)
+        else:
+            pass
+
+    def seller_info(self, seller: str or Seller):
+        if isinstance(seller, str):
+            seller = Seller(*self.seller_db.get_note_by_login(seller))
+
+        print('Name: ', seller.name)
+        print('Email: ', seller.email)
+        print('Phone_number: ', seller.phone_number)
+        print('Main category: ', seller.main_category)
+        print('Rating: ', seller.rating, 'Total assessments: ', seller.total_assessments)
+
+    def product_info(self, product: str or Product):
+        if isinstance(product, str):
+            product = Product(*self.product_db.get_note(product))
+
+        print('-----------------------------')
+        print('Index: ', product.idx)
+        print('Name: ', product.name)
+        print('Seller: ', product.seller)
+        print('Category: ', product.category)
+        print('Price: ', product.price)
+        print('Quantity: ', product.total_quantity)
+        print('Rating: ', product.rating, 'Total assessments: ', product.total_assessments)
+        print('Description:\n', product.description)
+        print('Characteristics:')
+        for key, value in product.characteristics.items():
+            print('\t', key, ":", value)
+        print('-----------------------------')
+
+    def add_product_assessment(self, product: str or Product):
+        if isinstance(product, str):
+            product = Product(*self.product_db.get_note(product))
+
+        if not isinstance(self.user, Customer):
+            print("Only logged in customers can add assessments")
+            return
+
+        assessment = float(input('Input assessment(from 0 to 5.0): '))
+
+        if not 0. <= assessment <= 5.:
+            print("An assessment should be from zero to five")
+            return
+
+        product.rating = (product.rating * product.total_assessments + assessment) / (product.total_assessments + 1)
+        product.total_assessments += 1
+
+        self.product_db.update(product)
+
+        seller = Seller(*self.seller_db.get_note_by_login(product.seller))
+        seller.rating = (seller.rating * seller.total_assessments + assessment) / (seller.total_assessments + 1)
+        seller.total_assessments += 1
+
+        self.seller_db.update(seller)
+
+    def add_product_in_cart(self, product: str or Product):
+        if isinstance(product, str):
+            product = Product(*self.product_db.get_note(product))
+
+        if not isinstance(self.user, Customer):
+            print("Only singed in customers can add products in cart.")
+            return
+
+        for p, q, a in self.cart_list:
+            if p.idx == product.idx:
+                print("You have already added this product to the cart")
+                return
+
+        quantity = int(input(f"There are {product.total_quantity} items in stock. "
+                             f"Select number of items to add in card: "))
+
+        if quantity > product.total_quantity:
+            print("You can't add to the cart more product than we have.")
+            return
+
+        seller = Seller(*self.seller_db.get_note_by_login(product.seller))
+        address = Address(**seller.address)
+
+        if quantity != 0:
+            self.cart_list.append((product, quantity, address))
+
+    def show_cart(self):
+        if len(self.cart_list) == 0:
+            print("Your cart is empty.")
+            return
+
+        print("<Product>".ljust(18), "<Quantity>", sep='')
+        for product, quantity, address in self.cart_list:
+            print(product.name.ljust(18), quantity, sep='')
+
+    def create_order(self):
+        if not isinstance(self.user, Customer):
+            print('You must be logged in as a customer to create an order')
+            return
+
+        if len(self.cart_list) == 0:
+            print('To create an order you need to add something to cart.')
+            return
+
+        payment_method = input('Input payment method: ')
+        print('Delivery offers:')
+        print('Yandex, price: ', yandex_price)
+        print('Sber, price: ', sber_price)
+        print('Post, price: ', post_price)
+        delivery_name = input('Input delivery name: ').title()
+        if delivery_name not in ['Yandex', 'Sber', 'Post']:
+            print("Wrong delivery name.")
+            return
+
+        delivery = choose_delivery(delivery_name)
+        self.order_list.append(
+            Order(customer=self.user.login, composition=self.cart_list,
+                  destination=Address(**self.user.address), payment_method=payment_method,
+                  delivery=delivery, status='in processing'))
 
     def menu(self):
         cur_key = ''
         while cur_key != 'exit':
-            print('\nEnter: "home" to return to the main page, \n'
-                  '"sign in" to sign in,\n'
-                  '"sign out" to sign out, \n'
-                  '"create" to create an account, \n'
-                  '"categories" to list all categories, \n'
-                  '"products" to list all products, \n'
-                  '"exit" to exit\n'
-                  '"make order" to make order\n'
-                  '"create product" to create product\n'
-                  '"order list" to see a list of your orders\n'
-                  '"cart" to see current cart')
+            self.home()
+
             if cur_key == '' or cur_key == 'home':
                 cur_key = input()
+            if cur_key == 'register':
+                self.register()
             if cur_key == 'sign in':
-                user_type = input('Input user type- customer or seller: ')
-                login = input('Input login: ')
-                password = input('Input password: ')
-                if user_type == 'customer':
-                    customer = self.customer_db.get_note_by_login(login)
-                    if self.customer_db.check_similar_login(login):
-                        self.customer = Customer(*customer[:5],
-                                                   str(customer[6]),
-                                                   self.address_db,
-                                                   self.customer_db,
-                                                   customer[-1])
-                        if self.customer is not None:
-                            self.is_sign_in = True
-                elif user_type == 'seller':
-                    seller = self.seller_db.get_note_by_login(login)
-                    if self.seller_db.check_similar_login(login):
-                        # print(*seller[:5], str(seller[6]), seller[-1])
-                        self.seller = Seller(*seller[:5], str(seller[6]),
-                                               *seller[7:-1],
-                                               self.address_db,
-                                               self.seller_db,
-                                               seller[-1])
-                        if self.seller is not None:
-                            self.is_sign_in = True
-                        # print(1)     if cur_key == 'create' and not self.is_sign_in:
-                user_type = input('Input user type- customer or seller: ')
-                address = create_address(self.address_db)
-                if user_type == 'customer' and not self.is_sign_in:
-                    self.customer = create_customer(
-                        str(self.address_db.get_last_note()[-1]),
-                        self.address_db, self.customer_db)
-                    if self.customer is not None:
-                        self.is_sign_in = True
-                elif user_type == 'seller' and not self.is_sign_in:
-                    self.seller = create_seller(
-                        str(self.address_db.get_last_note()[-1]),
-                        self.address_db, self.seller_db
-                    )
-                    if self.seller is not None:
-                        self.is_sign_in = True
-            # print(1)
-            if cur_key == 'categories':
-                categories = self.display.categories()
-                self.cur_category = input('Choose a category: ')
-                if self.cur_category in categories:
-                    products_idx_by_category = \
-                        self.display.products_by_category(
-                            self.cur_category)
-                    product_idx = input('Choose a product index: ')
-                    if product_idx in products_idx_by_category:
-                        self.process_product_case(product_idx)
-                        print(1)
-            if cur_key == 'products':
-                products_idx = self.display.all_products()
-                product_idx = input('Choose a product index: ')
-                if product_idx in products_idx:
-                    self.process_product_case(product_idx)
-                    print(1)
+                self.sign_in()
+            if cur_key == 'sign out':
+                self.sign_out()
+            if cur_key == 'show products':
+                self.show_products()
+
+            if cur_key == 'select product':
+                self.select_product()
+
             if cur_key == 'make order':
                 self.create_order()
-                self.product_list.clear()
-                print(1)
+                self.cart_list.clear()
+
             if cur_key == 'create product':
-                if self.seller is not None:
-                    create_product(self.seller, self.product_db)
-                    print(1)
-                else:
-                    print('You must be logged in as a seller')
-            if cur_key == 'sign out':
-                if not self.is_sign_in:
-                    print('You are not authorized')
-                else:
-                    self.customer = None
-                    self.seller = None
-                    self.is_sign_in = False
-                    self.product_list.clear()
-                    self.order_list.clear()
+                self.create_product()
+
             if cur_key == 'order list':
                 if len(self.order_list) == 0:
                     print('Your order list is empty')
@@ -196,8 +397,11 @@ class UserInterface:
                         print('Total price: ', order.total_price)
                         self.display.product_from_list(order.composition)
                         order_cnt += 1
-            if cur_key == 'cart':
-                self.display.product_from_list(self.product_list)
+
+            if cur_key == 'show cart':
+                self.show_cart()
+
             if cur_key == 'exit':
                 break
+
             cur_key = ''

@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 from Address import Address
 from Product import Product
@@ -10,7 +10,7 @@ post_price = 100
 
 # accessing the delivery system
 class DeliveryStrategy:
-    def __init__(self, product_dict: Dict[Address, List[Product]], destination: Address):
+    def __init__(self, product_dict: Dict[Address, List[Tuple[Product, int]]], destination: Address):
         pass
 
     def price(self) -> int:
@@ -18,7 +18,7 @@ class DeliveryStrategy:
 
 
 class YandexDelivery(DeliveryStrategy):
-    def __init__(self, product_dict: Dict[Address, List[Product]], destination: Address):
+    def __init__(self, product_dict: Dict[Address, List[Tuple[Product, int]]], destination: Address):
         super().__init__(product_dict, destination)
 
     def price(self) -> int:
@@ -26,7 +26,7 @@ class YandexDelivery(DeliveryStrategy):
 
 
 class SberDelivery(DeliveryStrategy):
-    def __init__(self, product_dict: Dict[Address, List[Product]], destination: Address):
+    def __init__(self, product_dict: Dict[Address, List[Tuple[Product, int]]], destination: Address):
         super().__init__(product_dict, destination)
 
     def price(self) -> int:
@@ -34,7 +34,7 @@ class SberDelivery(DeliveryStrategy):
 
 
 class PostDelivery(DeliveryStrategy):
-    def __init__(self, product_dict: Dict[Address, List[Product]], destination: Address):
+    def __init__(self, product_dict: Dict[Address, List[Tuple[Product, int]]], destination: Address):
         super().__init__(product_dict, destination)
 
     def price(self) -> int:
@@ -48,4 +48,6 @@ def choose_delivery(delivery_name: str):
         delivery = SberDelivery
     elif delivery_name == 'Post':
         delivery = PostDelivery
+    else:
+        raise ValueError("Wrong delivery_name")
     return delivery

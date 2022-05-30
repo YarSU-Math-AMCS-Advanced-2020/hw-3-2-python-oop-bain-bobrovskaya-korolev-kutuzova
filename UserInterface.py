@@ -1,4 +1,3 @@
-from Display import Display
 from Product import Product
 from Customer import Customer
 from Seller import Seller
@@ -12,7 +11,7 @@ from DeliveryStrategy import YandexDelivery, SberDelivery, PostDelivery, \
 
 
 class UserInterface:
-    def __init__(self, display: Display, product_db: ProductDBRequests,
+    def __init__(self, product_db: ProductDBRequests,
                  seller_db: SellerDBRequests,
                  customer_db: CustomerDBRequests):
 
@@ -24,22 +23,19 @@ class UserInterface:
         # current state
         self.is_sign_in = False
         self.user = None
-        self.display = display
         self.cur_category = ''
         self.cart_list = list()
         self.order_list = list()
-
 
     def home(self):
         """
         Print list of commands that user can type
         """
         commands = ['register', 'sign in', 'sign out', 'create product',
-                    'show products', 'select product', 'show cart', 'make order', 'exit']
+                    'show products', 'select product', 'show cart', 'make order', 'show orders', 'exit']
 
-        print('Available commands: \n\t',end='')
+        print('Available commands: \n\t', end='')
         print(*commands, sep='\n\t')
-
 
     def input_address(self):
         country = input('Input country for address: ')
@@ -325,16 +321,24 @@ class UserInterface:
         if quantity != 0:
             self.cart_list.append((product, quantity, address))
 
+    def print_order_list(self, order_list):
+        print("<Product>".ljust(18), "<Quantity>".ljust(18), "<Total price>".ljust(18), sep='')
+        total_price = 0;
+        for product, quantity, address in order_list:
+            print(product.name.ljust(18), str(quantity).ljust(18),
+                  str(product.price * quantity).ljust(18), sep='')
+            total_price += product.price * quantity
+        print("-" * (18 * 3))
+        print("Total (without delivery):".ljust(18 * 2), str(total_price).ljust(18))
+
     def show_cart(self):
         if len(self.cart_list) == 0:
             print("Your cart is empty.")
             return
 
-        print("<Product>".ljust(18), "<Quantity>", sep='')
-        for product, quantity, address in self.cart_list:
-            print(product.name.ljust(18), quantity, sep='')
+        self.print_order_list(self.cart_list)
 
-    def create_order(self):
+    def make_order(self):
         if not isinstance(self.user, Customer):
             print('You must be logged in as a customer to create an order')
             return
@@ -354,17 +358,43 @@ class UserInterface:
             return
 
         delivery = choose_delivery(delivery_name)
+
+        for product, quantity, address in self.cart_list:
+            if quantity > product.total_quantity:
+                print(f"Cannot make order: there are {product.total_quantity} "
+                      f"items of {product.name} but the order requires {quantity}.")
+                return
+        for product, quantity, address in self.cart_list:
+            product.total_quantity -= quantity
+            self.product_db.update(product)
+
         self.order_list.append(
             Order(customer=self.user.login, composition=self.cart_list,
                   destination=Address(**self.user.address), payment_method=payment_method,
                   delivery=delivery, status='in processing'))
 
+        self.cart_list.clear()
+
+    def show_orders(self):
+        if len(self.order_list) == 0:
+            print('Your order list is empty')
+            return
+
+        order_cnt = 1
+        for order in self.order_list:
+            print('-' * (18 * 3))
+            print('Order number ', order_cnt)
+            print('Payment method: ', order.payment_method)
+            print('Status: ', order.status)
+            print('Total price: ', order.total_price)
+            print('Products:\n')
+            self.print_order_list(order.composition)
+
     def menu(self):
-        cur_key = ''
+        cur_key = 'home'
         while cur_key != 'exit':
             self.home()
-
-            if cur_key == '' or cur_key == 'home':
+            if cur_key == 'home':
                 cur_key = input()
             if cur_key == 'register':
                 self.register()
@@ -372,36 +402,18 @@ class UserInterface:
                 self.sign_in()
             if cur_key == 'sign out':
                 self.sign_out()
-            if cur_key == 'show products':
-                self.show_products()
-
-            if cur_key == 'select product':
-                self.select_product()
-
-            if cur_key == 'make order':
-                self.create_order()
-                self.cart_list.clear()
-
             if cur_key == 'create product':
                 self.create_product()
-
-            if cur_key == 'order list':
-                if len(self.order_list) == 0:
-                    print('Your order list is empty')
-                else:
-                    order_cnt = 1
-                    for order in self.order_list:
-                        print('Order number ', order_cnt)
-                        print('Payment method: ', order.payment_method)
-                        print('Status: ', order.status)
-                        print('Total price: ', order.total_price)
-                        self.display.product_from_list(order.composition)
-                        order_cnt += 1
-
+            if cur_key == 'show products':
+                self.show_products()
+            if cur_key == 'select product':
+                self.select_product()
+            if cur_key == 'make order':
+                self.make_order()
             if cur_key == 'show cart':
                 self.show_cart()
-
+            if cur_key == 'show orders':
+                self.show_orders()
             if cur_key == 'exit':
                 break
-
-            cur_key = ''
+            cur_key = 'home'

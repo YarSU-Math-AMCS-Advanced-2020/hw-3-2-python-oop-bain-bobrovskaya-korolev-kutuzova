@@ -1,5 +1,4 @@
 from Address import Address
-from Product import Product
 
 
 class Order:
@@ -8,10 +7,10 @@ class Order:
                  destination: Address, payment_method: str,
                  delivery, status: str):
         self.customer = customer
-        self.composition = composition
+        self.composition = composition.copy()
         self.total_price = 0
-        for product, amount, address in composition:
-            self.total_price += product.price
+        for product, quantity, address in composition:
+            self.total_price += product.price*quantity
         self.destination = destination
         self.payment_method = payment_method
         product_dict = {}

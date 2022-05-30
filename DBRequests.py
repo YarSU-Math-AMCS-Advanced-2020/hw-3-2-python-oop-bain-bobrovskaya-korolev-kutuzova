@@ -189,16 +189,13 @@ class DBRequests(metaclass=Singleton):
             raise ValueError('The field_name must be defined')
 
         field_index = self.field_index(field_name)
-        note = ""
+
         with open(self.db_name, 'r') as db_file:
             note = db_file.readline()
-            not_eof = True
-            idx_pos_cols = self.db_cols.index('idx')
-            while not_eof and note[:-1].split(';')[field_index] != field_value:
+            while note and note[:-1].split(';')[field_index] != field_value:
                 note = db_file.readline()
-                if not note:
-                    not_eof = False
-        if not_eof:
+
+        if note:
             # We separate the last character because it's '\n'
             cor_note = []
             for elem in note[:-1].split(';'):

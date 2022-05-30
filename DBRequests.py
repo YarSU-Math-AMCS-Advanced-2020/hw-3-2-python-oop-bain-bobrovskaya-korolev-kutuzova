@@ -65,46 +65,44 @@ class DBRequests(metaclass=Singleton):
             if db_file.readline() != ';'.join(self.db_cols) + '\n':
                 db_file.write(';'.join(self.db_cols) + '\n')
 
-    def get_max_idx(self):
-        """Gets the maximum index in the database"""
-
-        with open(self.db_name, 'r') as db_file:
-            max_idx = 0
-            for note in db_file:
-                idx_pos_cols = self.db_cols.index('idx')
-                first_attribute = note[:-1].split(';')[idx_pos_cols]
-                if first_attribute != 'idx' and \
-                        int(first_attribute) > max_idx:
-                    max_idx = int(first_attribute)
-        return max_idx
-
-    def get_last_note(self):
-        """Gets last note in database
-
-        Returns a list of the elements of the last note in the database
-
-        Returns
-        -------
-        list
-            Elements of characteristic of element in database
+    def field_index(self, field_name: str) -> int:
         """
+        Get column number of the field_name.
+        """
+        return self.db_cols.index(field_name)
+
+    def is_there_by(self, field_name: str, field_value: str) -> bool:
+        """
+        Check if the object with ``field_name`` equal to ``field_value`` presents in database.
+        """
+        if field_name not in self.db_cols:
+            raise ValueError('The field_name must be defined')
+
+        field_index = self.field_index(field_name)
 
         with open(self.db_name, 'r') as db_file:
-            for note in db_file:
-                pass
-        # We separate the last character because it's '\n'
-        cor_note = []
-        for elem in note[:-1].split(';'):
-            if elem[0] == '{' and elem[-1] == '}':
-                cor_note.append(Utils.str2dict(elem))
-            elif elem.isdigit():
-                cor_note.append(int(elem))
-            else:
-                cor_note.append(elem)
-        return cor_note
+            note = db_file.readline()
+            while note and note[:-1].split(';')[field_index] != field_value:
+                note = db_file.readline()
 
-    def is_suit_elem(self, elem):
-        """Checks if this element matches database columns
+        return bool(note)
+
+    def is_there(self, idx: str) -> bool:
+        return self.is_there_by('idx', idx)
+
+    def unique(self, field_name: str) -> list:
+        """
+        Make list of unique values across the column ``field_name``
+        """
+        idx = self.field_index(field_name)
+        u = set()
+        for note in self.get_all_notes():
+            u.add(note[idx])
+        return list(u)
+
+    def is_suit_elem(self, elem) -> bool:
+        """
+        Checks if this element matches database columns
 
         Checks that all attributes of an element are database columns
 
@@ -118,11 +116,11 @@ class DBRequests(metaclass=Singleton):
         bool
             Result of comparing element and database attribute types
         """
-        # t = Utils.get_clear_attr_names(elem)
         return Utils.get_clear_attr_names(elem) == self.db_cols
 
     def add_note(self, elem):
-        """Adds note to database
+        """
+        Adds note to database
 
         Adds a note with the element characteristics to the end of
         the database
@@ -142,64 +140,61 @@ class DBRequests(metaclass=Singleton):
         if not self.is_suit_elem(elem):
             raise ValueError('The element\'s attributes should look '
                              'like database columns')
+        if self.is_there_by('idx', elem.idx):
+            raise ValueError('The element with this id is already in database.')
+
         with open(self.db_name, 'a') as db_file:
-            last_note = self.get_last_note()
-            if elem.idx is None:
-                last_idx = str(self.get_max_idx() + 1)
-                # The element is assumed to have an idx attribute
-                elem.idx = last_idx
             db_file.write(';'.join(map(str, elem.__dict__.values())) + '\n')
 
-    def __add_note(self, attribute_values: list, idx=None):
-        with open(self.db_name, 'a') as db_file:
-            if idx is None:
-                max_idx = self.get_max_idx()
-                db_file.write(';'.join(map(str, attribute_values + [max_idx])) + '\n')
-            else:
-                db_file.write(';'.join(map(str, attribute_values)) + '\n')
-
     def del_note(self, idx: str):
+        self.del_note_by('idx', idx)
+
+    def del_note_by(self, field_name: str, field_value: str):
         """Deleting a note from the database
 
-        Deleting a note with the specified index from the database If
-        the index is not in the database, then nothing happens
-
-        Parameters
-        ----------
-        idx : str
-            The index to be removed from the database
+        Deleting a note with the specified index from the database
+        If the index is not in the database, then nothing happens
         """
-        # If the index is not in the database, then nothing happened
+
+        if field_name not in self.db_cols:
+            raise ValueError('The field_name must be defined')
+
+        field_index = self.field_index(field_name)
+
         with open(self.db_name, 'r') as db_file:
-            idx_pos_cols = self.db_cols.index('idx')
-            all_needed_notes = [note.split(';') for note in db_file
-                                if note[:-1].split(';')[idx_pos_cols] != idx]
+            all_notes = [note[:-1].split(';') for note in db_file.readlines()]
         with open(self.db_name, 'w') as db_file:
-            for note in all_needed_notes:
-                db_file.write(';'.join(note))
+            for note in all_notes:
+                if note[field_index] != field_value:
+                    db_file.write(';'.join(note))
+                    db_file.write('\n')
 
-    def get_note(self, idx: str):
-        """Gets note from database
+    def get_note(self, idx: str) -> list or None:
+        return self.get_note_by('idx', idx)
 
-        Gets a note with the specified index from the database
-        If not found [] was returned
+    def get_note_by(self, field_name: str, field_value: str) -> list or None:
+        """
+        Form list of attributes for the object in database with first ``field_name`` field equal to ``field_value``.
 
         Parameters
         ----------
-        idx : str
-            The index to get from the database
+        field_name : str
+        field_value : str
 
         Returns
         -------
-        list
-            Elements of characteristic of elem in database or [] if
-            note was not found
+        list of attributes required to form a class instance for stored object
         """
+        if field_name not in self.db_cols:
+            raise ValueError('The field_name must be defined')
+
+        field_index = self.field_index(field_name)
+        note = ""
         with open(self.db_name, 'r') as db_file:
             note = db_file.readline()
             not_eof = True
             idx_pos_cols = self.db_cols.index('idx')
-            while not_eof and note[:-1].split(';')[idx_pos_cols] != idx:
+            while not_eof and note[:-1].split(';')[field_index] != field_value:
                 note = db_file.readline()
                 if not note:
                     not_eof = False
@@ -219,40 +214,27 @@ class DBRequests(metaclass=Singleton):
                         cor_note.append(elem)
             return cor_note
         else:
-            return []
+            return None
 
-    def update_attribute(self, idx: str, attribute: str, value):
-        """Sets the specified value to an element attribute
-
-        Parameters
-        ----------
-        idx : str
-            Element index
-        attribute : str
-            The attribute of the element to be changed
-        value
-            Some new value
-
-        Raises
-        ------
-        ValueError
-            If the element at the specified index does not exist
+    def update(self, elem):
         """
-        if attribute == 'idx':
-            raise ValueError('Index change not allowed')
-        if attribute not in self.db_cols:
-            raise ValueError('Attribute not found')
-        idx = str(idx)
+        Update ``elem`` in database
+
+        The function finds entry in database with the same idx field, and updates it with ``elem``
+        """
+        if not self.is_suit_elem(elem):
+            raise ValueError('The element\'s attributes should look '
+                             'like database columns')
+        if not self.is_there_by('idx', elem.idx):
+            raise ValueError('The element with this idx is not present in the database')
+
+        idx = elem.idx
         note = self.get_note(idx)
         if note:
             self.del_note(idx)
-            note[self.db_cols.index(attribute)] = str(value)
-            self.__add_note(note, idx=idx)
-        else:
-            raise ValueError('The element at the specified index does'
-                             ' not exist')
+            self.add_note(elem)
 
-    def get_all(self):
+    def get_all_notes(self) -> list:
         with open(self.db_name, 'r') as db_file:
             notes = db_file.readlines()
         return [note[:-1].split(';') for note in notes[1:]]

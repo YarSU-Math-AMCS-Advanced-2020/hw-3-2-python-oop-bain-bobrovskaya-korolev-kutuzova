@@ -1,4 +1,5 @@
 from DBRequests import DBRequests
+from Product import Product
 
 
 class ProductDBRequests(DBRequests):
@@ -9,9 +10,10 @@ class ProductDBRequests(DBRequests):
     db_cols : list
         Product database columns
     """
-    db_cols = ['seller', 'name', 'price', 'description',
-                 'characteristics', 'category', 'total_quantity',
-                 'rating', 'total_assessments', 'idx']
+
+    db_cols = list(Product.__init__.__code__.co_varnames[1:])
 
     def __init__(self, db_name='ProductDatabase.txt'):
         super().__init__(db_name, self.db_cols)
+
+

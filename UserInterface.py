@@ -6,8 +6,7 @@ from SellerDBRequests import SellerDBRequests
 from CustomerDBRequests import CustomerDBRequests
 from Address import Address
 from Order import Order
-from DeliveryStrategy import YandexDelivery, SberDelivery, PostDelivery, \
-    yandex_price, sber_price, post_price, choose_delivery
+from DeliveryStrategy import YandexDelivery, SberDelivery, PostDelivery, choose_delivery
 
 
 class UserInterface:
@@ -348,10 +347,12 @@ class UserInterface:
             return
 
         payment_method = input('Input payment method: ')
+        destination = Address(**self.user.address)
+
         print('Delivery offers:')
-        print('Yandex, price: ', yandex_price)
-        print('Sber, price: ', sber_price)
-        print('Post, price: ', post_price)
+        print('Yandex, price: ', choose_delivery('Yandex')(self.cart_list, destination).price())
+        print('Sber, price: ', choose_delivery('Sber')(self.cart_list, destination).price())
+        print('Post, price: ', choose_delivery('Post')(self.cart_list, destination).price())
         delivery_name = input('Input delivery name: ').title()
         if delivery_name not in ['Yandex', 'Sber', 'Post']:
             print("Wrong delivery name.")
@@ -370,7 +371,7 @@ class UserInterface:
 
         self.order_list.append(
             Order(customer=self.user.login, composition=self.cart_list,
-                  destination=Address(**self.user.address), payment_method=payment_method,
+                  destination=destination, payment_method=payment_method,
                   delivery=delivery, status='in processing'))
 
         self.cart_list.clear()

@@ -3,6 +3,13 @@ from Customer import Customer
 
 
 class CustomerDBRequests(DBRequests):
+    """
+        Class that is used to work with customer database requests
+
+        Attributes and methods are inherited from DBRequests.
+        But db_cols is fixed to Customer attributes
+    """
+
     # generate database columns from Customers.__init__ arguments list (except 'self')
     db_cols = list(Customer.__init__.__code__.co_varnames[1:])
 

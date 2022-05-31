@@ -1,6 +1,16 @@
 class Address:
     """
     Container class for addresses
+
+    Attributes
+    ----------
+    country : str
+    region : str
+    locality : str
+    street : str
+    index : str
+    house : str
+    flat : str
     """
 
     def __init__(self, country: str, region: str, locality: str, street: str,

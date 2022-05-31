@@ -46,6 +46,10 @@ def get_clear_attr_names(elem) -> List[str]:
 
 
 def str2dict(string: str) -> dict:
+    """
+    Convert string representation of dict of strings
+    to corresponding dict of strings
+    """
     dict_ = dict((key.strip().replace('\'', ''), \
                   int(value.strip().replace('\'', '')) if \
                       value.strip().replace('\'', '').isdigit() \

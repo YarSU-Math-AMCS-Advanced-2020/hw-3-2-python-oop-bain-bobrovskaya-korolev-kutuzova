@@ -3,14 +3,14 @@ from Product import Product
 
 
 class ProductDBRequests(DBRequests):
-    """Class is used to work with products database requests
+    """
+    Class that is used to work with products database requests
 
-    Parameters
-    ----------
-    db_cols : list
-        Product database columns
+    Attributes and methods are inherited from DBRequests.
+    But db_cols is fixed to Product attributes
     """
 
+    # generate database columns from Product.__init__ arguments list (except 'self')
     db_cols = list(Product.__init__.__code__.co_varnames[1:])
 
     def __init__(self, db_name: str = 'ProductDatabase.txt'):

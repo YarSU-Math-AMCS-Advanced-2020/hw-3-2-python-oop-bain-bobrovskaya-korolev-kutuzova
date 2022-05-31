@@ -193,13 +193,13 @@ class UserInterface:
 
         category = input("Select category: ")
 
-        # select fields to print
-        indexes = [self.product_db.field_index('idx'),
-                   self.product_db.field_index('name'),
-                   self.product_db.field_index('price'),
-                   self.product_db.field_index('category'),
-                   self.product_db.field_index('rating'),
-                   self.product_db.field_index('total_assessments')]
+        # select attributes to print
+        indexes = [self.product_db.attribute_index('idx'),
+                   self.product_db.attribute_index('name'),
+                   self.product_db.attribute_index('price'),
+                   self.product_db.attribute_index('category'),
+                   self.product_db.attribute_index('rating'),
+                   self.product_db.attribute_index('total_assessments')]
 
         # get all notes
         product_notes = self.product_db.get_all_notes()
@@ -211,7 +211,7 @@ class UserInterface:
         # add head of our table
         product_notes = [self.product_db.db_cols] + product_notes
 
-        # select fields of interest
+        # select attributes of interest
         product_notes = [[note[i] for i in indexes] for note in product_notes]
 
         # print everything, applying ljust(18)

@@ -2,10 +2,52 @@ from Utils import str2dict
 
 
 class Product:
+    """
+    Container class for products
+
+    Attributes
+    ----------
+    seller : str
+        seller login
+    name : str
+        name of the product
+    price : float
+        price of the product
+    description : str
+        full description of the product
+    characteristics : dict
+        each key is characteristic name, corresponding value is characteristic itself
+    category : str
+    total_quantity : int
+    rating : float
+    total_assessments : int
+    idx : str
+        unique identifier of the product
+    """
     def __init__(self, seller: str, name: str, price: float,
                  description: str, characteristics: dict, category: str,
                  total_quantity: int, rating: float = 0,
                  total_assessments: int = 0, idx=None):
+        """
+        Parameters
+        ----------
+        seller : str
+            seller login
+        name : str
+            name of the product
+        price : float
+            price of the product
+        description : str
+            full description of the product
+        characteristics : dict
+            each key is characteristic name, corresponding value is characteristic itself
+        category : str
+        total_quantity : int
+        rating : float
+        total_assessments : int
+        idx : str
+            unique identifier of the product
+        """
         # Suppose that parameters were given as db columns
         self.seller = seller
         self.name = name

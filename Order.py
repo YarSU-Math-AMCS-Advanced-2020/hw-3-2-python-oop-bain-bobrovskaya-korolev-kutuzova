@@ -1,6 +1,7 @@
 from Address import Address
 from enum import Enum, auto
-from DeliveryStrategy import YandexDelivery, SberDelivery, PostDelivery
+from DeliveryStrategy import DeliveryStrategy
+from typing import Type
 
 
 class OrderStatus(Enum):
@@ -13,7 +14,7 @@ class Order:
     # the class of the strategy we need is passed to the constructor
     def __init__(self, customer: str, composition: list,
                  destination: Address, payment_method: str,
-                 delivery: YandexDelivery or SberDelivery or PostDelivery, status: OrderStatus):
+                 delivery: Type[DeliveryStrategy], status: OrderStatus):
         self.customer = customer
         self.composition = composition.copy()
         self.total_price = 0

@@ -3,14 +3,14 @@ from Seller import Seller
 
 
 class SellerDBRequests(DBRequests):
-    """Class is used to work with products database requests
-
-    Parameters
-    ----------
-    db_cols : list
-        Seller database columns
     """
-    # generate database columns from Customers.__init__ arguments list (excluding 'self')
+    Class that is used to work with seller database requests
+
+    Attributes and methods are inherited from DBRequests.
+    But db_cols is fixed to Seller attributes
+    """
+
+    # generate database columns from Seller.__init__ arguments list (excluding 'self')
     db_cols = list(Seller.__init__.__code__.co_varnames[1:])
 
     def __init__(self, db_name: str = 'SellerDatabase.txt'):

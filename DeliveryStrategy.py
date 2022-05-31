@@ -11,6 +11,12 @@ class DeliveryStrategy:
         self.destination = destination
 
     def price(self) -> float:
+        """
+        Returns
+        -------
+        float
+            price of delivery based on delivery information
+        """
         pass
 
 
@@ -19,6 +25,12 @@ class YandexDelivery(DeliveryStrategy):
         super().__init__(product_dict, destination)
 
     def price(self) -> float:
+        """
+        Returns
+        -------
+        float
+            price of delivery based on delivery information
+        """
         return 150. * len(self.product_dict)
 
 
@@ -28,6 +40,12 @@ class SberDelivery(DeliveryStrategy):
         super().__init__(product_dict, destination)
 
     def price(self) -> float:
+        """
+        Returns
+        -------
+        float
+            price of delivery based on delivery information
+        """
         return 300. * len(self.product_dict) ** 0.5
 
 
@@ -36,10 +54,19 @@ class PostDelivery(DeliveryStrategy):
         super().__init__(product_dict, destination)
 
     def price(self) -> float:
+        """
+        Returns
+        -------
+        float
+            price of delivery based on delivery information
+        """
         return 100. * len(self.product_dict) ** 2
 
 
 def choose_delivery(delivery_name: str) -> YandexDelivery or SberDelivery or PostDelivery:
+    """
+    Select delivery strategy by its name
+    """
     if delivery_name == 'Yandex':
         return YandexDelivery
     elif delivery_name == 'Sber':

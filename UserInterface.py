@@ -6,7 +6,8 @@ from SellerDBRequests import SellerDBRequests
 from CustomerDBRequests import CustomerDBRequests
 from Address import Address
 from Order import Order, OrderStatus
-from DeliveryStrategy import YandexDelivery, SberDelivery, PostDelivery, choose_delivery
+from DeliveryStrategy import choose_delivery
+from typing import List
 
 
 class UserInterface:
@@ -320,7 +321,7 @@ class UserInterface:
         if quantity != 0:
             self.cart_list.append((product, quantity, address))
 
-    def print_order_list(self, order_list):
+    def print_order_list(self, order_list: List[Order]):
         print("<Product>".ljust(18), "<Quantity>".ljust(18), "<Total price>".ljust(18), sep='')
         total_price = 0;
         for product, quantity, address in order_list:

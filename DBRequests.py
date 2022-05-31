@@ -118,7 +118,7 @@ class DBRequests(metaclass=Singleton):
         """
         return Utils.get_clear_attr_names(elem) == self.db_cols
 
-    def add_note(self, elem):
+    def add_note(self, elem) -> None:
         """
         Adds note to database
 
@@ -146,10 +146,10 @@ class DBRequests(metaclass=Singleton):
         with open(self.db_name, 'a') as db_file:
             db_file.write(';'.join(map(str, elem.__dict__.values())) + '\n')
 
-    def del_note(self, idx: str):
+    def del_note(self, idx: str) -> None:
         self.del_note_by('idx', idx)
 
-    def del_note_by(self, field_name: str, field_value: str):
+    def del_note_by(self, field_name: str, field_value: str) -> None:
         """Deleting a note from the database
 
         Deleting a note with the specified index from the database
@@ -213,7 +213,7 @@ class DBRequests(metaclass=Singleton):
         else:
             return None
 
-    def update(self, elem):
+    def update(self, elem) -> None:
         """
         Update ``elem`` in database
 

@@ -1,4 +1,3 @@
-from Address import Address
 from User import User
 
 
@@ -13,8 +12,3 @@ class Seller(User):
         self.rating = rating
         self.total_assessments = total_assessments
         self.idx = idx
-
-
-
-
-

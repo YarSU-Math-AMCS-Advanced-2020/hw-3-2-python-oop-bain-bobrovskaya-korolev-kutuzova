@@ -13,7 +13,5 @@ class ProductDBRequests(DBRequests):
 
     db_cols = list(Product.__init__.__code__.co_varnames[1:])
 
-    def __init__(self, db_name='ProductDatabase.txt'):
+    def __init__(self, db_name: str = 'ProductDatabase.txt'):
         super().__init__(db_name, self.db_cols)
-
-

@@ -1,6 +1,3 @@
-from Address import Address
-
-
 class User:
     def __init__(self, login: str, password: str, name: str, email: str,
                  phone_number: str, address: dict):
@@ -11,5 +8,5 @@ class User:
         self.phone_number = phone_number
         self.address = address
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.login

@@ -1,4 +1,7 @@
-def get_cls_name(elem):
+from typing import List
+
+
+def get_cls_name(elem) -> str:
     """Get the element's class name as a string
 
     Parameters
@@ -22,7 +25,7 @@ def get_cls_name(elem):
     return cls_name
 
 
-def get_clear_attr_names(elem):
+def get_clear_attr_names(elem) -> List[str]:
     """Get element attributes list without '_', '__', and class name
 
     Parameters
@@ -42,7 +45,7 @@ def get_clear_attr_names(elem):
     return clear_attr_names
 
 
-def str2dict(string: str):
+def str2dict(string: str) -> dict:
     dict_ = dict((key.strip().replace('\'', ''), \
                   int(value.strip().replace('\'', '')) if \
                       value.strip().replace('\'', '').isdigit() \

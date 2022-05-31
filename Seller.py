@@ -20,6 +20,7 @@ class Seller(User):
     idx : str
         its unique identifier in the database
     """
+
     def __init__(self, login: str, password: str, name: str, email: str,
                  phone_number: str, address: dict,
                  main_category: str, rating: float, total_assessments: int,

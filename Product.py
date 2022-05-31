@@ -24,6 +24,7 @@ class Product:
     idx : str
         unique identifier of the product
     """
+
     def __init__(self, seller: str, name: str, price: float,
                  description: str, characteristics: dict, category: str,
                  total_quantity: int, rating: float = 0,

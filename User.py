@@ -12,6 +12,7 @@ class User:
     address : dict of str
         must be compatible with call Address(**address)
     """
+
     def __init__(self, login: str, password: str, name: str, email: str,
                  phone_number: str, address: dict):
         self.login = login

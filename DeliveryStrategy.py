@@ -1,15 +1,16 @@
 from typing import Dict, List, Tuple
-
+from abc import ABC, abstractmethod
 from Address import Address
 from Product import Product
 
 
 # accessing the delivery system
-class DeliveryStrategy:
+class DeliveryStrategy(ABC):
     def __init__(self, product_dict: Dict[Address, List[Tuple[Product, int]]], destination: Address):
         self.product_dict = product_dict
         self.destination = destination
 
+    @abstractmethod
     def price(self) -> float:
         """
         Returns

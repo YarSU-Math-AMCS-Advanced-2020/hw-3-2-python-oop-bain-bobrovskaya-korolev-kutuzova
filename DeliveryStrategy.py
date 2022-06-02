@@ -1,8 +1,13 @@
 from typing import Dict, List, Tuple
 from abc import ABC, abstractmethod
+from enum import Enum, auto
 from Address import Address
 from Product import Product
 
+class DELIVERY(Enum):
+    YANDEX = 1
+    SBER = 2
+    POST = 3
 
 # accessing the delivery system
 class DeliveryStrategy(ABC):
@@ -64,15 +69,15 @@ class PostDelivery(DeliveryStrategy):
         return 100. * len(self.product_dict) ** 2
 
 
-def choose_delivery(delivery_name: str) -> YandexDelivery or SberDelivery or PostDelivery:
+def choose_delivery(delivery_company: DELIVERY) -> YandexDelivery or SberDelivery or PostDelivery:
     """
     Select delivery strategy by its name
     """
-    if delivery_name == 'Yandex':
+    if delivery_company == DELIVERY.YANDEX:
         return YandexDelivery
-    elif delivery_name == 'Sber':
+    elif delivery_company == DELIVERY.SBER:
         return SberDelivery
-    elif delivery_name == 'Post':
+    elif delivery_company == DELIVERY.POST:
         return PostDelivery
     else:
         raise ValueError("Wrong delivery name")

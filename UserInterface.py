@@ -6,7 +6,7 @@ from SellerDBRequests import SellerDBRequests
 from CustomerDBRequests import CustomerDBRequests
 from Address import Address
 from Order import Order, OrderStatus
-from DeliveryStrategy import choose_delivery
+from DeliveryStrategy import choose_delivery, DELIVERY
 from typing import List
 
 
@@ -349,15 +349,12 @@ class UserInterface:
         destination = self.user.address
 
         print('Delivery offers:')
-        print('Yandex, price: ', choose_delivery('Yandex')(self.cart_list, destination).price())
-        print('Sber, price: ', choose_delivery('Sber')(self.cart_list, destination).price())
-        print('Post, price: ', choose_delivery('Post')(self.cart_list, destination).price())
-        delivery_name = input('Input delivery name: ').title()
-        if delivery_name not in ['Yandex', 'Sber', 'Post']:
-            print("Wrong delivery name.")
-            return
+        for i in DELIVERY:
+            print(f"{i.value}. {i.name.title()} price: "
+                  f"{choose_delivery(i)(self.cart_list, destination).price()}")
+        delivery_option = int(input('Choose delivery option (input number): '))
 
-        delivery = choose_delivery(delivery_name)
+        delivery = choose_delivery(DELIVERY(delivery_option))
 
         for product, quantity, address in self.cart_list:
             if quantity > product.total_quantity:

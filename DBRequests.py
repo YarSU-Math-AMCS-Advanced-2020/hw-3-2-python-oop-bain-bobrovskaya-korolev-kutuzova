@@ -1,6 +1,9 @@
 import os
 import Utils
 from Singleton import Singleton
+from typing import TypeVar
+
+compatible_with_db_cols = TypeVar('compatible_with_db_cols')
 
 
 class DBRequests(metaclass=Singleton):
@@ -132,7 +135,7 @@ class DBRequests(metaclass=Singleton):
         """
         return Utils.get_clear_attr_names(elem) == self.db_cols
 
-    def add_note(self, elem) -> None:
+    def add_note(self, elem: compatible_with_db_cols) -> None:
         """
         Add note to database with elem attributes
 
@@ -241,7 +244,7 @@ class DBRequests(metaclass=Singleton):
         else:
             return None
 
-    def update(self, elem) -> None:
+    def update(self, elem: compatible_with_db_cols) -> None:
         """
         Update note of object with the same <idx> attribute
 

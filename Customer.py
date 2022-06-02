@@ -1,3 +1,4 @@
+from typing import Dict
 from User import User
 from Address import Address
 
@@ -20,7 +21,7 @@ class Customer(User):
     """
 
     def __init__(self, login: str, password: str, name: str, email: str,
-                 phone_number: str, address: dict or Address, idx: str):
+                 phone_number: str, address: Dict[str, str] or Address, idx: str):
         super().__init__(login, password, name, email, phone_number,
                          address)
         self.idx = idx

@@ -1,3 +1,4 @@
+from typing import Dict
 from Address import Address
 
 
@@ -12,12 +13,12 @@ class User:
     name : str
     email : str
     phone_number : str
-    address : Address or dict of str
+    address : Address or Dict[str, str]
         dict of str must be compatible with call Address(**address)
     """
 
     def __init__(self, login: str, password: str, name: str, email: str,
-                 phone_number: str, address: dict or Address):
+                 phone_number: str, address: Dict[str, str] or Address):
         self.login = login
         self.password = password
         self.name = name

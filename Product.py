@@ -1,3 +1,6 @@
+from typing import Dict
+
+
 class Product:
     """
     Container class for products
@@ -12,7 +15,7 @@ class Product:
         price of the product
     description : str
         full description of the product
-    characteristics : dict
+    characteristics : Dict[str, str]
         each key is characteristic name, corresponding value is characteristic itself
     category : str
     total_quantity : int
@@ -23,9 +26,9 @@ class Product:
     """
 
     def __init__(self, seller: str, name: str, price: float,
-                 description: str, characteristics: dict, category: str,
+                 description: str, characteristics: Dict[str, str], category: str,
                  total_quantity: int, rating: float = 0,
-                 total_assessments: int = 0, idx=None):
+                 total_assessments: int = 0, idx: str = None):
         """
         Parameters
         ----------
@@ -37,7 +40,7 @@ class Product:
             price of the product
         description : str
             full description of the product
-        characteristics : dict
+        characteristics : Dict[str, str]
             each key is characteristic name, corresponding value is characteristic itself
         category : str
         total_quantity : int

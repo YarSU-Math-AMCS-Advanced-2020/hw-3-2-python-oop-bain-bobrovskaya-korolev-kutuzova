@@ -43,17 +43,3 @@ def get_clear_attr_names(elem) -> List[str]:
         clear_attr_name = attr.replace(get_cls_name(elem), '')
         clear_attr_names.append(clear_attr_name.lstrip('_'))
     return clear_attr_names
-
-
-def str2dict(string: str) -> dict:
-    """
-    Convert string representation of dict of strings
-    to corresponding dict of strings
-    """
-    dict_ = dict((key.strip().replace('\'', ''), \
-                  int(value.strip().replace('\'', '')) if \
-                      value.strip().replace('\'', '').isdigit() \
-                      else value.strip().replace('\'', '')) \
-                 for key, value in (element.split(':') for element in \
-                                    string[1: -1].split(',')))
-    return dict_

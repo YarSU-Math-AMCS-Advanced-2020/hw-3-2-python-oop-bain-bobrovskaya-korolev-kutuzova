@@ -1,6 +1,3 @@
-from Utils import str2dict
-
-
 class Product:
     """
     Container class for products
@@ -55,7 +52,7 @@ class Product:
         self.price = price
         self.description = description
         if isinstance(characteristics, str):
-            self.characteristics = str2dict(characteristics)
+            self.characteristics = eval(characteristics)
         else:
             self.characteristics = characteristics
         self.category = category

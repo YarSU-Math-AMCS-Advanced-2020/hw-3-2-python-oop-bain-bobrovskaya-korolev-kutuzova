@@ -37,7 +37,7 @@ class UserInterface:
         print('Available commands: \n\t', end='')
         print(*commands, sep='\n\t')
 
-    def input_address(self):
+    def input_address(self) -> Address:
         country = input('Input country for address: ')
         region = input('Input region for address: ')
         locality = input('Input locality for address: ')
@@ -46,13 +46,13 @@ class UserInterface:
         house = int(input('Input house for address(int): '))
         flat = int(input('Input flat for address(int): '))
 
-        return {'country': country,
-                'region': region,
-                'locality': locality,
-                'street': street,
-                'index': index,
-                'house': house,
-                'flat': flat}
+        return Address(country=country,
+                       region=region,
+                       locality=locality,
+                       street=street,
+                       index=index,
+                       house=house,
+                       flat=flat)
 
     def register(self):
         """
@@ -184,8 +184,6 @@ class UserInterface:
                     rating=0, total_assessments=0,
                     idx=idx))
 
-        Product(*self.product_db.get_note(idx))
-
     def show_products(self):
 
         categories = ['All'] + self.product_db.unique('category')
@@ -316,7 +314,7 @@ class UserInterface:
             return
 
         seller = Seller(*self.seller_db.get_note_by_login(product.seller))
-        address = Address(**seller.address)
+        address = seller.address
 
         if quantity != 0:
             self.cart_list.append((product, quantity, address))
@@ -348,7 +346,7 @@ class UserInterface:
             return
 
         payment_method = input('Input payment method: ')
-        destination = Address(**self.user.address)
+        destination = self.user.address
 
         print('Delivery offers:')
         print('Yandex, price: ', choose_delivery('Yandex')(self.cart_list, destination).price())

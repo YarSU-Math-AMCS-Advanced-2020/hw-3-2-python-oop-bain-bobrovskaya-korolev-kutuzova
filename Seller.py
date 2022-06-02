@@ -1,5 +1,5 @@
 from User import User
-
+from Address import Address
 
 class Seller(User):
     """
@@ -12,8 +12,8 @@ class Seller(User):
     name : str
     email : str
     phone_number : str
-    address : dict of str
-        must be compatible with call Address(**address)
+    address : Address or dict of str
+        dict of str must be compatible with call Address(**address)
     main_category : str
     rating : float
     total_assessments : int
@@ -22,7 +22,7 @@ class Seller(User):
     """
 
     def __init__(self, login: str, password: str, name: str, email: str,
-                 phone_number: str, address: dict,
+                 phone_number: str, address: dict or Address,
                  main_category: str, rating: float, total_assessments: int,
                  idx: str):
         super().__init__(login, password, name, email, phone_number,

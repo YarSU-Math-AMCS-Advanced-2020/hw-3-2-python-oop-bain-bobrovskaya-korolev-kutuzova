@@ -228,7 +228,7 @@ class DBRequests(metaclass=Singleton):
             cor_note = []
             for elem in note[:-1].split(';'):
                 if elem[0] == '{' and elem[-1] == '}':
-                    cor_note.append(Utils.str2dict(elem))
+                    cor_note.append(eval(elem))
                 elif elem.isdigit():
                     cor_note.append(int(elem))
                 else:

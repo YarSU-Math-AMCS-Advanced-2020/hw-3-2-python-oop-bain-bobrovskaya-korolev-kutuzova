@@ -22,3 +22,12 @@ class Address:
         self.index = index
         self.house = house
         self.flat = flat
+
+    def __str__(self):
+        return str({'country': self.country,
+                    'region': self.region,
+                    'locality': self.locality,
+                    'street': self.street,
+                    'index': self.index,
+                    'house': self.house,
+                    'flat': self.flat})
